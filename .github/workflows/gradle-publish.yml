@@ -1,0 +1,39 @@
+name: Build Mod
+
+on:
+  push:
+    branches: [ main, master ] # Запускать при пуше в ветки main или master
+  pull_request:
+    branches: [ main, master ] # Запускать при создании Pull Request в эти ветки
+  workflow_dispatch: # Позволяет запускать сборку вручную на вкладке Actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Сборка будет происходить на виртуальной машине с Ubuntu
+
+    steps:
+      # 1. Клонируем код репозитория на виртуальную машину
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Java 21 (требуется для Minecraft 1.21)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # 3. Даем права на исполнение для Gradle Wrapper (важный шаг)
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # 4. Запускаем сборку с помощью Gradle
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      # 5. Загружаем собранный .jar файл как "артефакт"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PanoramaScreenshot-1.21
+          path: build/libs/*.jar
