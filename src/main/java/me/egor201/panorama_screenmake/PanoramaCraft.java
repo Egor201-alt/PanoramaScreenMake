@@ -23,7 +23,7 @@ public class PanoramaCraft implements ClientModInitializer {
         PANO_DIR = new File(MinecraftClient.getInstance().runDirectory, "panoramas");
 
         KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                Text.translatable("key.panoramascreenmake.take"),
+                "key.panoramascreenmake.take",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F4,
                 Text.translatable("category.panoramascreenmake.main")
