@@ -18,16 +18,21 @@ public class PanoramaCraft implements ClientModInitializer {
 
     private static File PANO_DIR;
 
+    private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
+        new Identifier("panoramascreenmake", "main") 
+    );
+
     @Override
     public void onInitializeClient() {
         PANO_DIR = new File(MinecraftClient.getInstance().runDirectory, "panoramas");
 
         KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding.Builder("key.panoramascreenmake.take")
-                .setCategory("category.panoramascreenmake.main")
-                .setType(InputUtil.Type.KEYSYM)
-                .setKeyCode(GLFW.GLFW_KEY_F4)
-                .build()
+            new KeyBinding(
+                "key.panoramascreenmake.take", 
+                InputUtil.Type.KEYSYM,          
+                GLFW.GLFW_KEY_F4,            
+                CATEGORY                        
+            )
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
