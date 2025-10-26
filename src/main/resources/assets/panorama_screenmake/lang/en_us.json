@@ -1,5 +1,5 @@
 {
-  "category.panoramascreenshot.main": "Panorama ScreenMake",
-  "key.panoramascreenshot.take": "Take Panorama",
-  "panscreenshot.success": "Panorama successfully saved to folder %s"
+  "category.panoramascreenmake.main": "Panorama ScreenMake",
+  "key.panoramascreenmake.take": "Take Panorama",
+  "panscreenmake.success": "Panorama successfully saved to folder %s"
 }
