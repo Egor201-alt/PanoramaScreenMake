@@ -1,5 +1,5 @@
 {
-  "category.panoramascreenmake.main": "Panorama ScreenMake",
+  "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Сделать панораму",
   "panscreenmake.success": "Панорама успешно сохранена в папку %s"
 }
