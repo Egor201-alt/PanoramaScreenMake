@@ -1,4 +1,4 @@
-package me.fridtjof.panorama_screenshot;
+package me.egor201.panorama_screenmake;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
