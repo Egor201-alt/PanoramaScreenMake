@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class PanoramaCraft implements ClientModInitializer {
     private static File PANO_DIR;
 
     private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
-        new Identifier("panoramascreenmake", "main") 
+        Identifier.of("panoramascreenmake", "main")
     );
 
     @Override
