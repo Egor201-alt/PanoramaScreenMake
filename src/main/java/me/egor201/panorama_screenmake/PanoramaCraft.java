@@ -26,7 +26,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 "key.panoramascreenmake.take",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F4,
-                Text.translatable("category.panoramascreenmake.main")
+                "category.panoramascreenmake.main"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
