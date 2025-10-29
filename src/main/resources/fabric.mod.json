@@ -23,7 +23,7 @@
       	"fabric": "*",
       	"minecraft": ">=1.21.6 <1.22.0",
       	"java": ">=21"
-    }
+    },
 	"suggests": {
   		"modmenu": ">=15.0.0"
 	}
