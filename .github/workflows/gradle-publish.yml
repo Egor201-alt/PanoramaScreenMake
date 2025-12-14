@@ -2,9 +2,9 @@ name: Build Mod
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, big-update ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, big-update ]
   workflow_dispatch:
 
 jobs:
