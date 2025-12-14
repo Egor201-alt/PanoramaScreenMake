@@ -35,16 +35,31 @@ public class PanoramaCraft implements ClientModInitializer {
                 CATEGORY                        
             )
         );
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (panoramaKeyBinding.wasPressed()) {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
-                    //
-                    Text resultMessage = client.takePanorama(PANO_DIR);
-                    //
+        
+                    File screenshotsSubDir = new File(PANO_DIR, "screenshots");
+                    screenshotsSubDir.mkdirs();
+        
+                    Text resultMessage = client.takePanorama(screenshotsSubDir);
+        
                     if (resultMessage != null) {
                         client.player.sendMessage(resultMessage, false);
+        
+                        Util.getIoWorkerExecutor().execute(() -> {
+                            for (int i = 0; i < 6; i++) {
+                                File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
+                                File dest = new File(PANO_DIR, "panorama_" + i + ".png");
+                                if (src.exists() && src.renameTo(dest)) {
+                                    LOGGER.info("Move to " + src.getName());
+                                }
+                            }
+                            if (screenshotsSubDir.isDirectory() && screenshotsSubDir.listFiles().length == 0) {
+                                screenshotsSubDir.delete();
+                            }
+                        });
                     }
                 }
             }
