@@ -5,13 +5,18 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.entries.DropdownMenuEntry;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 public class ModMenuIntegration implements ModMenuApi {
+
+    private static final List<Integer> RESOLUTIONS = List.of(512, 1024, 2048);
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
@@ -30,18 +35,18 @@ public class ModMenuIntegration implements ModMenuApi {
 
         ConfigEntryBuilder entry = builder.entryBuilder();
 
-        main.addEntry(entry.startEnumSelector(
+        main.addEntry(entry.startDropdownMenu(
                         Text.literal("Разрешение панорамы"),
-                        PanoramaSize.class,
-                        PanoramaSize.fromSize(config.panoramaSize)
+                        DropdownMenuEntry.TopCellElement.of(config.panoramaSize, integer -> integer.toString()),
+                        DropdownMenuEntry.CellCreator.of(integer -> Text.literal(integer + "×" + integer))
                 )
-                .setDefaultValue(PanoramaSize.MEDIUM)
+                .setSelections(RESOLUTIONS)
+                .setDefaultValue(1024)
                 .setTooltip(Text.literal("Выберите качество панорамы:\n")
                         .append(Text.literal("• 512×512 — быстро, низкое качество\n").formatted(Formatting.GRAY))
                         .append(Text.literal("• 1024×1024 — оптимально (как в ванилле)\n").formatted(Formatting.GRAY))
                         .append(Text.literal("• 2048×2048 — высокое качество, дольше съёмка").formatted(Formatting.GRAY)))
-                .setEnumNameProvider(enumValue -> ((PanoramaSize) enumValue).getDisplayName())
-                .setSaveConsumer(newSize -> config.panoramaSize = newSize.getSize())
+                .setSaveConsumer(newValue -> config.panoramaSize = newValue)
                 .build());
 
         main.addEntry(entry.startKeyCodeField(Text.literal("Клавиша съёмки"), config.getKey())
@@ -50,35 +55,5 @@ public class ModMenuIntegration implements ModMenuApi {
                 .build());
 
         return builder.build();
-    }
-
-    public enum PanoramaSize {
-        LOW(512, "512×512 — Быстро"),
-        MEDIUM(1024, "1024×1024 — Оптимально"),
-        HIGH(2048, "2048×2048 — Высокое качество");
-
-        private final int size;
-        private final String displayName;
-
-        PanoramaSize(int size, String displayName) {
-            this.size = size;
-            this.displayName = displayName;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public Text getDisplayName() {
-            return Text.literal(displayName);
-        }
-
-        public static PanoramaSize fromSize(int size) {
-            return switch (size) {
-                case 512 -> LOW;
-                case 2048 -> HIGH;
-                default -> MEDIUM;
-            };
-        }
     }
 }
