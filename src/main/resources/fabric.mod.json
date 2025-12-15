@@ -17,13 +17,17 @@
 	"entrypoints": {
 		"client": [
 			"me.egor201.panorama_screenmake.PanoramaCraft"
-		]
+		],
+		"modmenu": [
+	        "me.egor201.panorama_screenmake.ModMenuIntegration"
+	    ]
 	},
   	"depends": {
       	"fabricloader": ">=0.17.2",
       	"fabric": "*",
       	"minecraft": ">=1.21.6 <1.22.0",
-      	"java": ">=21"
+      	"java": ">=21",
+		"cloth-config": ">=20.0.0"
     },
 	"suggests": {
   		"modmenu": ">=15.0.0"
