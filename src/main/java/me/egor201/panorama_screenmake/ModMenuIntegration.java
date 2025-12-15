@@ -5,7 +5,6 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder; 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -38,7 +37,7 @@ public class ModMenuIntegration implements ModMenuApi {
         main.addEntry(entry.startDropdownMenu(
                         Text.literal("Разрешение панорамы"),
                         config.panoramaSize,
-                        value -> Text.literal(value + "×" + value + " — " + getQualityDescription(value))
+                        value -> Text.literal(value.toString() + "×" + value + " — " + getQualityDescription(value))
                 )
                 .setSelections(RESOLUTIONS)
                 .setDefaultValue(1024)
