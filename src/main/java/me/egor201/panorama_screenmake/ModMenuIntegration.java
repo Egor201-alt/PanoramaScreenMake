@@ -6,16 +6,18 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 public class ModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> createConfigScreen(parent);
+        return this::createConfigScreen;
     }
 
-    private static Screen createConfigScreen(Screen parent) {
+    private Screen createConfigScreen(Screen parent) {
         ModConfig config = ModConfig.get();
 
         ConfigBuilder builder = ConfigBuilder.create()
@@ -29,7 +31,7 @@ public class ModMenuIntegration implements ModMenuApi {
 
         general.addEntry(entry.startIntSlider(Text.literal("Размер панорамы"), config.panoramaSize, 256, 4096)
                 .setDefaultValue(1024)
-                .setTooltip(Text.literal("Размер каждого лица куба (квадрат)"))
+                .setTooltip(Text.literal("Размер каждого лица (квадрат). Больше = лучше качество, но дольше съёмка"))
                 .setSaveConsumer(value -> config.panoramaSize = value)
                 .build());
 
@@ -39,10 +41,5 @@ public class ModMenuIntegration implements ModMenuApi {
                 .build());
 
         return builder.build();
-    }
-
-    @Override
-    public java.util.Optional<java.util.function.Supplier<Screen>> getConfigScreenFactory() {
-        return java.util.Optional.of(() -> createConfigScreen(null));
     }
 }
