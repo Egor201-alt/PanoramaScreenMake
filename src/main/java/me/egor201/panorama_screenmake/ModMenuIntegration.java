@@ -39,7 +39,7 @@ public class ModMenuIntegration implements ModMenuApi {
                         Text.literal("Разрешение панорамы"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(
                                 config.panoramaSize,
-                                integer -> Integer.toString(integer)
+                                s -> Integer.parseInt(s.trim())
                         ),
                         DropdownMenuBuilder.CellCreatorBuilder.of(value ->
                                 Text.literal(value + "×" + value + " — " + getQualityDescription(value))
