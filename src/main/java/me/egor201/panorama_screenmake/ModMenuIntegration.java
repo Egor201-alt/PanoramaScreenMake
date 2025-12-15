@@ -22,7 +22,7 @@ public class ModMenuIntegration implements ModMenuApi {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.literal("Panorama Craft Настройки"))
+                .setTitle(Text.literal("PanoramaScreenMake Settings"))
                 .setSavingRunnable(config::save);
 
         ConfigCategory general = builder.getOrCreateCategory(Text.literal("Общие"));
@@ -31,12 +31,12 @@ public class ModMenuIntegration implements ModMenuApi {
 
         general.addEntry(entry.startIntSlider(Text.literal("Размер панорамы"), config.panoramaSize, 256, 4096)
                 .setDefaultValue(1024)
-                .setTooltip(Text.literal("Размер каждого лица (квадрат). Больше = лучше качество, но дольше съёмка"))
+                .setTooltip(Text.literal("Разрешение скринов панорамы. Больше = лучше качество, но дольше съёмка"))
                 .setSaveConsumer(value -> config.panoramaSize = value)
                 .build());
 
         general.addEntry(entry.startKeyCodeField(Text.literal("Клавиша съёмки"), config.getKey())
-                .setDefaultValue(InputUtil.fromKeyCode(GLFW.GLFW_KEY_F4, 0))
+                .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(GLFW.GLFW_KEY_F4))
                 .setKeySaveConsumer(config::setKey)
                 .build());
 
