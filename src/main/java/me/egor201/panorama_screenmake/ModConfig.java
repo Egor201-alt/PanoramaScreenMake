@@ -34,10 +34,12 @@ public class ModConfig {
             try (FileReader reader = new FileReader(CONFIG_PATH.toFile())) {
                 ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
                 if (loaded != null) {
+                    if (loaded.panoramaSize <= 0) loaded.panoramaSize = 1024;
+                    if (loaded.keyCode <= 0) loaded.keyCode = GLFW.GLFW_KEY_F4;
                     config = loaded;
                 }
-            } catch (IOException e) {
-                PanoramaCraft.LOGGER.warn("Не удалось загрузить конфиг, используются значения по умолчанию", e);
+            } catch (Exception e) {
+                PanoramaCraft.LOGGER.warn("Повреждённый конфиг, создаём новый", e);
             }
         }
         return config;
