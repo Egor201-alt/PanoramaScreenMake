@@ -5,7 +5,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.entries.DropdownMenuEntry;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -37,8 +37,8 @@ public class ModMenuIntegration implements ModMenuApi {
 
         main.addEntry(entry.startDropdownMenu(
                         Text.literal("Разрешение панорамы"),
-                        DropdownMenuEntry.TopCellElement.of(config.panoramaSize, integer -> integer.toString()),
-                        DropdownMenuEntry.CellCreator.of(integer -> Text.literal(integer + "×" + integer))
+                        DropdownMenuBuilder.TopCellElementBuilder.of(config.panoramaSize, Object::toString),
+                        DropdownMenuBuilder.CellCreatorBuilder.of(value -> Text.literal(value + "×" + value + " — " + getQualityDescription(value)))
                 )
                 .setSelections(RESOLUTIONS)
                 .setDefaultValue(1024)
@@ -55,5 +55,14 @@ public class ModMenuIntegration implements ModMenuApi {
                 .build());
 
         return builder.build();
+    }
+
+    private String getQualityDescription(int size) {
+        return switch (size) {
+            case 512 -> "Быстро";
+            case 1024 -> "Оптимально";
+            case 2048 -> "Высокое качество";
+            default -> "";
+        };
     }
 }
