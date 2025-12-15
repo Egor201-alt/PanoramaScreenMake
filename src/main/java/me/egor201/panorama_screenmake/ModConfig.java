@@ -18,8 +18,7 @@ public class ModConfig {
 
     public int panoramaSize = 1024;
     public int keyCode = GLFW.GLFW_KEY_F4;
-    public int keyModifier = 0;
-
+    
     private static ModConfig instance;
 
     public static ModConfig get() {
@@ -33,7 +32,10 @@ public class ModConfig {
         ModConfig config = new ModConfig();
         if (Files.exists(CONFIG_PATH)) {
             try (FileReader reader = new FileReader(CONFIG_PATH.toFile())) {
-                config = GSON.fromJson(reader, ModConfig.class);
+                ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
+                if (loaded != null) {
+                    config = loaded;
+                }
             } catch (IOException e) {
                 PanoramaCraft.LOGGER.warn("Не удалось загрузить конфиг, используются значения по умолчанию", e);
             }
@@ -53,11 +55,10 @@ public class ModConfig {
     }
 
     public InputUtil.Key getKey() {
-        return InputUtil.fromKeyCode(keyCode, keyModifier);
+        return InputUtil.fromTranslationKey("key.keyboard." + GLFW.glfwGetKeyName(keyCode, GLFW.glfwGetKeyScancode(keyCode)));
     }
 
     public void setKey(InputUtil.Key key) {
         this.keyCode = key.getCode();
-        this.keyModifier = key.getModifiers();
     }
 }
