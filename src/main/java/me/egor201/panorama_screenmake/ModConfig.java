@@ -14,34 +14,40 @@ import java.nio.file.Path;
 
 public class ModConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("panoramacraft.json");
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("panorama-screenmake.json");
 
     public int panoramaSize = 1024;
     public int keyCode = GLFW.GLFW_KEY_F4;
-    
+
     private static ModConfig instance;
 
     public static ModConfig get() {
         if (instance == null) {
             instance = load();
+            instance.save();
         }
         return instance;
     }
 
     private static ModConfig load() {
         ModConfig config = new ModConfig();
+
         if (Files.exists(CONFIG_PATH)) {
             try (FileReader reader = new FileReader(CONFIG_PATH.toFile())) {
                 ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
                 if (loaded != null) {
-                    if (loaded.panoramaSize <= 0) loaded.panoramaSize = 1024;
-                    if (loaded.keyCode <= 0) loaded.keyCode = GLFW.GLFW_KEY_F4;
-                    config = loaded;
+                    if (loaded.panoramaSize >= 256 && loaded.panoramaSize <= 4096) {
+                        config.panoramaSize = loaded.panoramaSize;
+                    }
+                    if (loaded.keyCode > 0) {
+                        config.keyCode = loaded.keyCode;
+                    }
                 }
             } catch (Exception e) {
-                PanoramaCraft.LOGGER.warn("Повреждённый конфиг, создаём новый", e);
+                PanoramaCraft.LOGGER.warn("Повреждённый конфиг panorama-screenmake.json — используем дефолты", e);
             }
         }
+
         return config;
     }
 
@@ -57,7 +63,7 @@ public class ModConfig {
     }
 
     public InputUtil.Key getKey() {
-        return InputUtil.fromTranslationKey("key.keyboard." + GLFW.glfwGetKeyName(keyCode, GLFW.glfwGetKeyScancode(keyCode)));
+        return InputUtil.Type.KEYSYM.createFromCode(keyCode);
     }
 
     public void setKey(InputUtil.Key key) {
