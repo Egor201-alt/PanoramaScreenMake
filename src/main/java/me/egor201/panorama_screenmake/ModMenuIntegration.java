@@ -37,8 +37,13 @@ public class ModMenuIntegration implements ModMenuApi {
 
         main.addEntry(entry.startDropdownMenu(
                         Text.literal("Разрешение панорамы"),
-                        DropdownMenuBuilder.TopCellElementBuilder.of(config.panoramaSize, Object::toString),
-                        DropdownMenuBuilder.CellCreatorBuilder.of(value -> Text.literal(value + "×" + value + " — " + getQualityDescription(value)))
+                        DropdownMenuBuilder.TopCellElementBuilder.of(
+                                config.panoramaSize,
+                                integer -> Integer.toString(integer)
+                        ),
+                        DropdownMenuBuilder.CellCreatorBuilder.of(value ->
+                                Text.literal(value + "×" + value + " — " + getQualityDescription(value))
+                        )
                 )
                 .setSelections(RESOLUTIONS)
                 .setDefaultValue(1024)
