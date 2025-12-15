@@ -41,25 +41,36 @@ public class PanoramaCraft implements ClientModInitializer {
             while (panoramaKeyBinding.wasPressed()) {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
-        
-                    File screenshotsSubDir = new File(PANO_DIR, "screenshots");
-                    screenshotsSubDir.mkdirs();
-        
-                    Text resultMessage = client.takePanorama(screenshotsSubDir);
-        
+
+                    Text resultMessage = client.takePanorama(PANO_DIR);
+
                     if (resultMessage != null) {
                         client.player.sendMessage(resultMessage, false);
-        
+
                         Util.getIoWorkerExecutor().execute(() -> {
+                            File screenshotsSubDir = new File(PANO_DIR, "screenshots");
+                            if (!screenshotsSubDir.exists() || !screenshotsSubDir.isDirectory()) {
+                                return;
+                            }
+
+                            boolean movedAny = false;
                             for (int i = 0; i < 6; i++) {
                                 File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
                                 File dest = new File(PANO_DIR, "panorama_" + i + ".png");
-                                if (src.exists() && src.renameTo(dest)) {
-                                    LOGGER.info("Move to " + src.getName());
+                                if (src.exists()) {
+                                    if (src.renameTo(dest)) {
+                                        LOGGER.info("Move: panorama_" + i + ".png → panoramas/");
+                                        movedAny = true;
+                                    } else {
+                                        LOGGER.error("Dont move: " + src.getAbsolutePath());
+                                    }
                                 }
                             }
-                            if (screenshotsSubDir.isDirectory() && screenshotsSubDir.listFiles().length == 0) {
-                                screenshotsSubDir.delete();
+
+                            if (movedAny && screenshotsSubDir.listFiles().length == 0) {
+                                if (screenshotsSubDir.delete()) {
+                                    LOGGER.info("Delete folder screenshots/");
+                                }
                             }
                         });
                     }
