@@ -11,8 +11,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
-
 public class ModMenuIntegration implements ModMenuApi {
 
     @Override
@@ -33,27 +31,23 @@ public class ModMenuIntegration implements ModMenuApi {
         ConfigEntryBuilder entry = builder.entryBuilder();
 
         main.addEntry(entry.startEnumSelector(
-                Text.literal("Разрешение панорамы"),
-                PanoramaSize.class,
-                PanoramaSize.fromSize(config.panoramaSize)
-            )
-            .setDefaultValue(PanoramaSize.MEDIUM)
-            .setTooltip(Text.literal("Выберите качество панорамы:\n")
-                    .append(Text.literal("• 512×512 — быстро, низкое качество\n").formatted(Formatting.GRAY))
-                    .append(Text.literal("• 1024×1024 — оптимально (как в ванилле)\n").formatted(Formatting.GRAY))
-                    .append(Text.literal("• 2048×2048 — высокое качество, дольше съёмка").formatted(Formatting.GRAY)))
-            .setEnumNameProvider(enumValue -> ((PanoramaSize) enumValue).getDisplayName())
-            .setSaveConsumer(newSize -> config.panoramaSize = newSize.getSize())
-            .build());
+                        Text.literal("Разрешение панорамы"),
+                        PanoramaSize.class,
+                        PanoramaSize.fromSize(config.panoramaSize)
+                )
+                .setDefaultValue(PanoramaSize.MEDIUM)
+                .setTooltip(Text.literal("Выберите качество панорамы:\n")
+                        .append(Text.literal("• 512×512 — быстро, низкое качество\n").formatted(Formatting.GRAY))
+                        .append(Text.literal("• 1024×1024 — оптимально (как в ванилле)\n").formatted(Formatting.GRAY))
+                        .append(Text.literal("• 2048×2048 — высокое качество, дольше съёмка").formatted(Formatting.GRAY)))
+                .setEnumNameProvider(enumValue -> ((PanoramaSize) enumValue).getDisplayName())
+                .setSaveConsumer(newSize -> config.panoramaSize = newSize.getSize())
+                .build());
 
         main.addEntry(entry.startKeyCodeField(Text.literal("Клавиша съёмки"), config.getKey())
-            .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(GLFW.GLFW_KEY_F4))
-            .setKeySaveConsumer(config::setKey)
-            .build());
-
-        builder.setFooterText(Text.literal("Нажмите клавишу в мире, чтобы сделать панораму.\n")
-                .append(Text.literal("Файлы сохраняются в .minecraft/panoramas/").formatted(Formatting.ITALIC))
-                .formatted(Formatting.DARK_GRAY));
+                .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(GLFW.GLFW_KEY_F4))
+                .setKeySaveConsumer(config::setKey)
+                .build());
 
         return builder.build();
     }
