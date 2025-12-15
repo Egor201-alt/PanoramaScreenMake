@@ -37,17 +37,13 @@ public class ModMenuIntegration implements ModMenuApi {
 
         main.addEntry(entry.startDropdownMenu(
                         Text.literal("Разрешение панорамы"),
-                        DropdownMenuBuilder.TopCellElementBuilder.of(
-                                config.panoramaSize,
-                                s -> Integer.parseInt(s.trim())
-                        ),
-                        DropdownMenuBuilder.CellCreatorBuilder.of(value ->
-                                Text.literal(value + "×" + value + " — " + getQualityDescription(value))
-                        )
+                        config.panoramaSize,
+                        value -> Text.literal(value + "×" + value + " — " + getQualityDescription(value))
                 )
                 .setSelections(RESOLUTIONS)
                 .setDefaultValue(1024)
-                .setTooltip(Text.literal("Выберите качество панорамы:\n")
+                .setSuggestionMode(false)
+                .setTooltip(Text.literal("Кликните, чтобы выбрать качество панорамы:\n")
                         .append(Text.literal("• 512×512 — быстро, низкое качество\n").formatted(Formatting.GRAY))
                         .append(Text.literal("• 1024×1024 — оптимально (как в ванилле)\n").formatted(Formatting.GRAY))
                         .append(Text.literal("• 2048×2048 — высокое качество, дольше съёмка").formatted(Formatting.GRAY)))
