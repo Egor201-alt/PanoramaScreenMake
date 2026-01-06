@@ -94,13 +94,11 @@ public class PanoramaCraft implements ClientModInitializer {
         int oldWidth = window.getFramebufferWidth();
         int oldHeight = window.getFramebufferHeight();
 
-        boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
-
         if (customRes) {
             ResolutionOverride.size = targetRes;
             ResolutionOverride.active = true;
 
-            client.getFramebuffer().resize(targetRes, targetRes, isMac);
+            client.getFramebuffer().resize(targetRes, targetRes);
             client.gameRenderer.onResized(targetRes, targetRes);
         }
 
@@ -117,7 +115,7 @@ public class PanoramaCraft implements ClientModInitializer {
         } finally {
             if (customRes) {
                 ResolutionOverride.active = false;
-                client.getFramebuffer().resize(oldWidth, oldHeight, isMac);
+                client.getFramebuffer().resize(oldWidth, oldHeight);
                 client.gameRenderer.onResized(oldWidth, oldHeight);
             }
         }
@@ -132,7 +130,6 @@ public class PanoramaCraft implements ClientModInitializer {
             File screenshotsSubDir = new File(finalSessionDir, "screenshots");
             
             if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
-                boolean hasErrors = false;
                 
                 for (int i = 0; i < 6; i++) {
                     File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
@@ -147,7 +144,6 @@ public class PanoramaCraft implements ClientModInitializer {
                                 src.delete();
                             } catch (IOException ex) {
                                 ex.printStackTrace();
-                                hasErrors = true;
                             }
                         }
                     }
