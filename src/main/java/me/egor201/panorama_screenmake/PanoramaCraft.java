@@ -1,6 +1,7 @@
 package me.egor201.panorama_screenmake;
 
 import me.egor201.panorama_screenmake.ModConfig;
+import me.egor201.panorama_screenmake.utils.ResolutionOverride;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -10,6 +11,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -85,42 +87,76 @@ public class PanoramaCraft implements ClientModInitializer {
         File finalSessionDir = getNextFreeDirectory(baseDir);
         finalSessionDir.mkdirs();
 
-        Text resultMessage = client.takePanorama(finalSessionDir);
+        int targetRes = ModConfig.INSTANCE.resolution;
+        boolean customRes = targetRes > 0;
+        
+        Window window = client.getWindow();
+        int oldWidth = window.getFramebufferWidth();
+        int oldHeight = window.getFramebufferHeight();
 
-        if (resultMessage != null) {
-            client.player.sendMessage(resultMessage, false);
+        if (customRes) {
+            ResolutionOverride.size = targetRes;
+            ResolutionOverride.active = true;
 
-            Util.getIoWorkerExecutor().execute(() -> {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException ignored) {}
+            client.getFramebuffer().resize(targetRes, targetRes, MinecraftClient.IS_SYSTEM_MAC);
+            client.gameRenderer.onResized(targetRes, targetRes);
+        }
 
-                File screenshotsSubDir = new File(finalSessionDir, "screenshots");
+        try {
+            Text resultMessage = client.takePanorama(finalSessionDir);
+
+            if (resultMessage != null) {
+                client.player.sendMessage(resultMessage, false);
+                processFilesAsync(finalSessionDir);
+            }
+        } catch (Exception e) {
+            client.player.sendMessage(Text.literal("Error taking panorama!"), false);
+            e.printStackTrace();
+        } finally {
+            if (customRes) {
+                ResolutionOverride.active = false;
+                client.getFramebuffer().resize(oldWidth, oldHeight, MinecraftClient.IS_SYSTEM_MAC);
+                client.gameRenderer.onResized(oldWidth, oldHeight);
+            }
+        }
+    }
+
+    private void processFilesAsync(File finalSessionDir) {
+        Util.getIoWorkerExecutor().execute(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ignored) {}
+
+            File screenshotsSubDir = new File(finalSessionDir, "screenshots");
+            
+            if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
+                boolean hasErrors = false;
                 
-                if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
-                    for (int i = 0; i < 6; i++) {
-                        File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
-                        File dest = new File(finalSessionDir, "panorama_" + i + ".png");
+                for (int i = 0; i < 6; i++) {
+                    File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
+                    File dest = new File(finalSessionDir, "panorama_" + i + ".png");
 
-                        if (src.exists()) {
+                    if (src.exists()) {
+                        try {
+                            Files.move(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
                             try {
-                                Files.move(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            } catch (IOException e) {
-                                try {
-                                    Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                    src.delete();
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
+                                Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                src.delete();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                                hasErrors = true;
                             }
                         }
                     }
-                    if (screenshotsSubDir.list().length == 0) {
-                        screenshotsSubDir.delete();
-                    }
                 }
-            });
-        }
+                
+                String[] list = screenshotsSubDir.list();
+                if (list != null && list.length == 0) {
+                    screenshotsSubDir.delete();
+                }
+            }
+        });
     }
 
     private File getNextFreeDirectory(File baseDir) {
