@@ -7,6 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
     maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
