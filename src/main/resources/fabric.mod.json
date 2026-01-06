@@ -22,6 +22,9 @@
 	        "me.egor201.panorama_screenmake.ModMenuIntegration"
 	    ]
 	},
+  	"mixins": [
+    	"panoramascreenmake.mixins.json"
+  	],
   	"depends": {
       	"fabricloader": ">=0.17.2",
       	"fabric": "*",
