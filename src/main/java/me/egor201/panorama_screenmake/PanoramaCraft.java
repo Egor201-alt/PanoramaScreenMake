@@ -1,6 +1,6 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.ModConfig;
+import me.egor201.panorama_screenmake.config.ModConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -46,7 +46,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 if (delaySec > 0 && !isTimerActive) {
                     isTimerActive = true;
                     tickCounter = delaySec * 20;
-                    client.player.sendMessage(Text.literal("§eСнимок панорамы через " + delaySec + " сек..."), true);
+                    client.player.sendMessage(Text.translatable("panorama.message.timer_start", delaySec), true);
                 } else if (delaySec == 0) {
                     takePanoramaScreenshot(client);
                 }
@@ -61,7 +61,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 tickCounter--;
 
                 if (tickCounter % 20 == 0 && tickCounter > 0) {
-                    client.player.sendMessage(Text.literal("§eПанорама через: " + (tickCounter / 20)), true);
+                    client.player.sendMessage(Text.translatable("panorama.message.timer_tick", tickCounter / 20), true);
                 }
 
                 if (tickCounter <= 0) {
@@ -73,58 +73,64 @@ public class PanoramaCraft implements ClientModInitializer {
     }
 
     private void takePanoramaScreenshot(MinecraftClient client) {
-        File saveDir;
-        String customPath = ModConfig.INSTANCE.savePath;
-
-        if (customPath != null && !customPath.trim().isEmpty()) {
-            saveDir = new File(customPath);
-        } else {
-            saveDir = new File(client.runDirectory, "panoramas");
+        File runDir = client.runDirectory;
+        String configPath = ModConfig.INSTANCE.savePath;
+        
+        File baseDir = new File(runDir, (configPath == null || configPath.trim().isEmpty()) ? "panoramas" : configPath);
+        
+        if (!baseDir.exists()) {
+            baseDir.mkdirs();
         }
 
-        saveDir.mkdirs();
+        File finalSessionDir = getNextFreeDirectory(baseDir);
+        finalSessionDir.mkdirs();
 
-        Text resultMessage = client.takePanorama(saveDir); 
+        Text resultMessage = client.takePanorama(finalSessionDir);
 
         if (resultMessage != null) {
             client.player.sendMessage(resultMessage, false);
 
             Util.getIoWorkerExecutor().execute(() -> {
                 try {
-                    Thread.sleep(1500); 
+                    Thread.sleep(1500);
                 } catch (InterruptedException ignored) {}
 
-                File screenshotsSubDir = new File(saveDir, "screenshots");
-                if (!screenshotsSubDir.exists() || !screenshotsSubDir.isDirectory()) {
-                    return;
-                }
+                File screenshotsSubDir = new File(finalSessionDir, "screenshots");
+                
+                if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
+                    for (int i = 0; i < 6; i++) {
+                        File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
+                        File dest = new File(finalSessionDir, "panorama_" + i + ".png");
 
-                boolean allMoved = true;
-                for (int i = 0; i < 6; i++) {
-                    File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
-                    File dest = new File(saveDir, "panorama_" + i + ".png");
-
-                    if (src.exists()) {
-                        if (!src.renameTo(dest)) {
+                        if (src.exists()) {
                             try {
-                                Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                if (!src.delete()) {
-                                    allMoved = false;
-                                }
+                                Files.move(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
                             } catch (IOException e) {
-                                e.printStackTrace(); 
-                                allMoved = false;
+                                try {
+                                    Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                    src.delete();
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                         }
-                    } else {
-                        allMoved = false;
+                    }
+                    if (screenshotsSubDir.list().length == 0) {
+                        screenshotsSubDir.delete();
                     }
                 }
-
-                if (screenshotsSubDir.listFiles() != null && screenshotsSubDir.listFiles().length == 0) {
-                    screenshotsSubDir.delete();
-                }
             });
+        }
+    }
+
+    private File getNextFreeDirectory(File baseDir) {
+        int id = 1;
+        while (true) {
+            File check = new File(baseDir, "panorama_" + id);
+            if (!check.exists()) {
+                return check;
+            }
+            id++;
         }
     }
 }

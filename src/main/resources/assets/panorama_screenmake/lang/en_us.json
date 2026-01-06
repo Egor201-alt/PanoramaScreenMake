@@ -1,5 +1,23 @@
 {
   "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Take Panorama",
-  "panscreenmake.success": "Panorama successfully saved to folder %s"
+  "panscreenmake.success": "Panorama successfully saved to folder %s",
+  
+  "config.panoramascreenmake.category.general": "General",
+  
+  "config.panoramascreenmake.option.resolution": "Screenshot Resolution",
+  "config.panoramascreenmake.value.default": "Window Size (Default)",
+  "config.panoramascreenmake.tooltip.resolution": "Fixed resolution for panorama images. Higher values may lag.",
+  
+  "config.panoramascreenmake.option.delay": "Delay Before Shot",
+  "config.panoramascreenmake.value.instant": "Instant",
+  "config.panoramascreenmake.value.seconds": "%s sec.",
+  "config.panoramascreenmake.tooltip.delay": "Time to hide UI or hands before shooting.",
+  
+  "config.panoramascreenmake.option.path": "Save Folder Name",
+  "config.panoramascreenmake.tooltip.path": "Folder inside game directory. Leave empty for 'panoramas'.",
+  
+  "panorama.message.timer_start": "Panorama in %s seconds...",
+  "panorama.message.timer_tick": "Snapshot in: %s",
+  "panorama.message.success": "Saved to: %s"
 }
