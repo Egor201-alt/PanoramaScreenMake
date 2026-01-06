@@ -1,6 +1,6 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.config.ModConfig;
+import me.egor201.panorama_screenmake.ModConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
