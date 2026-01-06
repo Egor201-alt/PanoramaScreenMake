@@ -9,18 +9,14 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.io.IOException;
-import java.util.concurrent.Executor;
 import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class PanoramaCraft implements ClientModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("panorama_craft");
 
     private static File PANO_DIR;
 
@@ -40,6 +36,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 CATEGORY                        
             )
         );
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (panoramaKeyBinding.wasPressed()) {
                 if (client.player != null && !client.isPaused()) {
@@ -57,7 +54,6 @@ public class PanoramaCraft implements ClientModInitializer {
         
                             File screenshotsSubDir = new File(PANO_DIR, "screenshots");
                             if (!screenshotsSubDir.exists() || !screenshotsSubDir.isDirectory()) {
-                                LOGGER.warn("Подпапка screenshots не найдена!");
                                 return;
                             }
         
@@ -67,33 +63,23 @@ public class PanoramaCraft implements ClientModInitializer {
                                 File dest = new File(PANO_DIR, "panorama_" + i + ".png");
         
                                 if (src.exists()) {
-                                    if (src.renameTo(dest)) {
-                                        LOGGER.info("Перемещён: panorama_" + i + ".png");
-                                    } else {
+                                    if (!src.renameTo(dest)) {
                                         try {
                                             Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                            if (src.delete()) {
-                                                LOGGER.info("Скопирован и удалён: panorama_" + i + ".png");
-                                            } else {
-                                                LOGGER.warn("Не удалось удалить исходный: " + src);
+                                            if (!src.delete()) {
                                                 allMoved = false;
                                             }
                                         } catch (IOException e) {
-                                            LOGGER.error("Ошибка копирования: " + src, e);
+                                            e.printStackTrace();
                                             allMoved = false;
                                         }
                                     }
                                 } else {
-                                    LOGGER.warn("Файл не найден: " + src);
                                     allMoved = false;
                                 }
                             }
         
-                            if (allMoved && screenshotsSubDir.listFiles().length == 0) {
-                                if (screenshotsSubDir.delete()) {
-                                    LOGGER.info("Удалена пустая папка screenshots/");
-                                }
-                            } else if (screenshotsSubDir.listFiles().length == 0) {
+                            if (screenshotsSubDir.listFiles() != null && screenshotsSubDir.listFiles().length == 0) {
                                 screenshotsSubDir.delete();
                             }
                         });
