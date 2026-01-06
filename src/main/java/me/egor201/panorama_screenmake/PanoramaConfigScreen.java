@@ -1,6 +1,6 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.config.ModConfig;
+import me.egor201.panorama_screenmake.ModConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
