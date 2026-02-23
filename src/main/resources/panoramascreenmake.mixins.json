@@ -3,7 +3,8 @@
   "package": "me.egor201.panorama_screenmake.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "SimpleFramebufferMixin"
+    "SimpleFramebufferMixin",
+    "NativeImageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
