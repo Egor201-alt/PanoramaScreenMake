@@ -1,6 +1,5 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.ModConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -40,7 +39,7 @@ public class PanoramaConfigScreen {
             .setDefaultValue(0)
             .setTextGetter(val -> {
                 if (val == 0) return Text.translatable("config.panoramascreenmake.value.instant");
-                return Text.translatable("config.panoramascreenmake.value.seconds", val);
+                return Text.literal(val + "s"); 
             })
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.delay"))
@@ -58,7 +57,7 @@ public class PanoramaConfigScreen {
         );
 
         builder.setSavingRunnable(() -> {
-            // TODO: Add Save Logic
+            ModConfig.save();
         });
 
         return builder.build();
