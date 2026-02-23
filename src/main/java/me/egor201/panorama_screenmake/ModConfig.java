@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ModConfig {
 
-    public static ModConfig INSTANCE = new ModConfig();
+    public static final ModConfig INSTANCE = new ModConfig();
     
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "panoramascreenmake.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -23,16 +23,17 @@ public class ModConfig {
     public static void load() {
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
-                INSTANCE = GSON.fromJson(reader, ModConfig.class);
-                
-                if (INSTANCE.delaySeconds < 0) INSTANCE.delaySeconds = 0;
-                if (INSTANCE.delaySeconds > 10) INSTANCE.delaySeconds = 10;
-                
+                ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
+                if (loaded != null) {
+                    INSTANCE.resolution = loaded.resolution;
+                    INSTANCE.savePath = loaded.savePath != null ? loaded.savePath : "";
+                    INSTANCE.delaySeconds = Math.max(0, Math.min(10, loaded.delaySeconds));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            save();
+            save(); 
         }
     }
 
