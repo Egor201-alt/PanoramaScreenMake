@@ -37,10 +37,6 @@ public class PanoramaConfigScreen {
                 0, 10
             )
             .setDefaultValue(0)
-            .setTextGetter(val -> {
-                if (val == 0) return Text.translatable("config.panoramascreenmake.value.instant");
-                return Text.literal(val + "s"); 
-            })
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.delay"))
             .build()
