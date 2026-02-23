@@ -9,8 +9,22 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 
-    @ModifyConstant(method = "takePanorama", constant = @Constant(intValue = 1024))
-    private int injectCustomPanoramaResolution(int original) {
+    @ModifyConstant(
+        method = "takePanorama(Ljava/io/File;)Lnet/minecraft/text/Text;", 
+        constant = @Constant(intValue = 1024),
+        require = 0
+    )
+    private int injectCustomPanoramaResolution1024(int original) {
+        int customRes = ModConfig.INSTANCE.resolution;
+        return customRes > 0 ? customRes : original;
+    }
+    
+    @ModifyConstant(
+        method = "takePanorama(Ljava/io/File;)Lnet/minecraft/text/Text;", 
+        constant = @Constant(intValue = 256),
+        require = 0
+    )
+    private int injectCustomPanoramaResolution256(int original) {
         int customRes = ModConfig.INSTANCE.resolution;
         return customRes > 0 ? customRes : original;
     }
