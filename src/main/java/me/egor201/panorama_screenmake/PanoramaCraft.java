@@ -36,7 +36,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 "key.panoramascreenmake.take", 
                 InputUtil.Type.KEYSYM,          
                 GLFW.GLFW_KEY_F4,            
-                "category.panoramascreenmake.main"               
+                CATEGORY // Передаем объект категории                        
             )
         );
 
@@ -99,7 +99,7 @@ public class PanoramaCraft implements ClientModInitializer {
             ResolutionOverride.size = targetRes;
             ResolutionOverride.active = true;
 
-            client.getFramebuffer().resize(targetRes, targetRes, MinecraftClient.IS_SYSTEM_MAC);
+            client.getFramebuffer().resize(targetRes, targetRes);
             client.gameRenderer.onResized(targetRes, targetRes);
         }
 
@@ -116,7 +116,7 @@ public class PanoramaCraft implements ClientModInitializer {
         } finally {
             if (customRes) {
                 ResolutionOverride.active = false;
-                client.getFramebuffer().resize(oldWidth, oldHeight, MinecraftClient.IS_SYSTEM_MAC);
+                client.getFramebuffer().resize(oldWidth, oldHeight);
                 client.gameRenderer.onResized(oldWidth, oldHeight);
             }
         }
