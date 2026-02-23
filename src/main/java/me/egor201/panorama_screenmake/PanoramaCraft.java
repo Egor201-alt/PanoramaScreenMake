@@ -1,6 +1,5 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.utils.ResolutionOverride;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -10,7 +9,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -36,7 +34,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 "key.panoramascreenmake.take", 
                 InputUtil.Type.KEYSYM,          
                 GLFW.GLFW_KEY_F4,            
-                CATEGORY // Передаем объект категории                        
+                CATEGORY                        
             )
         );
 
@@ -89,22 +87,12 @@ public class PanoramaCraft implements ClientModInitializer {
         finalSessionDir.mkdirs();
 
         int targetRes = ModConfig.INSTANCE.resolution;
-        boolean customRes = targetRes > 0;
-        
-        Window window = client.getWindow();
-        int oldWidth = window.getFramebufferWidth();
-        int oldHeight = window.getFramebufferHeight();
-
-        if (customRes) {
-            ResolutionOverride.size = targetRes;
-            ResolutionOverride.active = true;
-
-            client.getFramebuffer().resize(targetRes, targetRes);
-            client.gameRenderer.onResized(targetRes, targetRes);
+        if (targetRes <= 0) {
+            targetRes = 1024;
         }
 
         try {
-            Text resultMessage = client.takePanorama(finalSessionDir);
+            Text resultMessage = client.takePanorama(finalSessionDir, targetRes, targetRes);
 
             if (resultMessage != null) {
                 client.player.sendMessage(resultMessage, false);
@@ -113,12 +101,6 @@ public class PanoramaCraft implements ClientModInitializer {
         } catch (Exception e) {
             client.player.sendMessage(Text.literal("Error taking panorama!"), false);
             e.printStackTrace();
-        } finally {
-            if (customRes) {
-                ResolutionOverride.active = false;
-                client.getFramebuffer().resize(oldWidth, oldHeight);
-                client.gameRenderer.onResized(oldWidth, oldHeight);
-            }
         }
     }
 
