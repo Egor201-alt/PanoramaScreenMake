@@ -86,13 +86,8 @@ public class PanoramaCraft implements ClientModInitializer {
         File finalSessionDir = getNextFreeDirectory(baseDir);
         finalSessionDir.mkdirs();
 
-        int targetRes = ModConfig.INSTANCE.resolution;
-        if (targetRes <= 0) {
-            targetRes = 1024;
-        }
-
         try {
-            Text resultMessage = client.takePanorama(finalSessionDir, targetRes, targetRes);
+            Text resultMessage = client.takePanorama(finalSessionDir);
 
             if (resultMessage != null) {
                 client.player.sendMessage(resultMessage, false);
