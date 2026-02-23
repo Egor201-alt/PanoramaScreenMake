@@ -18,6 +18,8 @@ import java.nio.file.StandardCopyOption;
 
 public class PanoramaCraft implements ClientModInitializer {
 
+    public static boolean isCapturingPanorama = false; 
+
     private int tickCounter = 0;
     private boolean isTimerActive = false;
 
@@ -87,6 +89,8 @@ public class PanoramaCraft implements ClientModInitializer {
         finalSessionDir.mkdirs();
 
         try {
+            isCapturingPanorama = true; 
+            
             Text resultMessage = client.takePanorama(finalSessionDir);
 
             if (resultMessage != null) {
@@ -96,6 +100,8 @@ public class PanoramaCraft implements ClientModInitializer {
         } catch (Exception e) {
             client.player.sendMessage(Text.literal("Error taking panorama!"), false);
             e.printStackTrace();
+        } finally {
+            isCapturingPanorama = false; 
         }
     }
 
@@ -110,7 +116,10 @@ public class PanoramaCraft implements ClientModInitializer {
             if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
                 
                 for (int i = 0; i < 6; i++) {
-                    File src = new File(screenshotsSubDir, "panorama_" + i + ".png");
+                    File src = new File(screenshotsSubDir, "screenshots/panorama_" + i + ".png");
+                    if(!src.exists()){
+                        src = new File(screenshotsSubDir, "panorama_" + i + ".png");
+                    }
                     File dest = new File(finalSessionDir, "panorama_" + i + ".png");
 
                     if (src.exists()) {
