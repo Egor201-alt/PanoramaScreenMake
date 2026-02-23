@@ -1,6 +1,27 @@
 {
+  "modmenu.nameTranslation.panoramascreenmake": "Panorama ScreenMake",
+  "modmenu.descriptionTranslation.modmenu": "Используйте скрытый код Mojang, чтобы быстро делать панорамы!",
+  
   "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Сделать панораму",
   "panscreenmake.success": "Панорама успешно сохранена в папку %s",
-  "modmenu.descriptionTranslation.modmenu": "Используйте неиспользуемый код моджангов чтобы быстро делать панорамы!",
+  
+  "config.panoramascreenmake.title": "Настройки Panorama ScreenMake",
+  "config.panoramascreenmake.category.general": "Основные",
+  
+  "config.panoramascreenmake.option.resolution": "Разрешение снимка",
+  "config.panoramascreenmake.value.default": "Размер окна (Стандарт)",
+  "config.panoramascreenmake.tooltip.resolution": "Фиксированное разрешение для панорам.\nБольшие значения могут вызывать лаги.",
+  
+  "config.panoramascreenmake.option.delay": "Задержка перед снимком",
+  "config.panoramascreenmake.value.instant": "Моментально",
+  "config.panoramascreenmake.value.seconds": "%s сек.",
+  "config.panoramascreenmake.tooltip.delay": "Время, чтобы успеть спрятать интерфейс (F1)\nили отбежать перед снимком.",
+  
+  "config.panoramascreenmake.option.path": "Имя папки для сохранения",
+  "config.panoramascreenmake.tooltip.path": "Папка внутри директории игры.\nОставьте пустым, чтобы сохранять в 'panoramas'.",
+  
+  "panorama.message.timer_start": "Панорама будет сделана через %s сек...",
+  "panorama.message.timer_tick": "Снимок через: %s",
+  "panorama.message.success": "Сохранено в: %s"
 }
