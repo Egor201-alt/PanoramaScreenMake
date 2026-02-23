@@ -1,6 +1,5 @@
 package me.egor201.panorama_screenmake;
 
-import me.egor201.panorama_screenmake.ModConfig;
 import me.egor201.panorama_screenmake.utils.ResolutionOverride;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -30,12 +29,14 @@ public class PanoramaCraft implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ModConfig.load();
+
         KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
                 "key.panoramascreenmake.take", 
                 InputUtil.Type.KEYSYM,          
                 GLFW.GLFW_KEY_F4,            
-                CATEGORY                        
+                "category.panoramascreenmake.main"               
             )
         );
 
@@ -98,7 +99,7 @@ public class PanoramaCraft implements ClientModInitializer {
             ResolutionOverride.size = targetRes;
             ResolutionOverride.active = true;
 
-            client.getFramebuffer().resize(targetRes, targetRes);
+            client.getFramebuffer().resize(targetRes, targetRes, MinecraftClient.IS_SYSTEM_MAC);
             client.gameRenderer.onResized(targetRes, targetRes);
         }
 
@@ -115,7 +116,7 @@ public class PanoramaCraft implements ClientModInitializer {
         } finally {
             if (customRes) {
                 ResolutionOverride.active = false;
-                client.getFramebuffer().resize(oldWidth, oldHeight);
+                client.getFramebuffer().resize(oldWidth, oldHeight, MinecraftClient.IS_SYSTEM_MAC);
                 client.gameRenderer.onResized(oldWidth, oldHeight);
             }
         }
