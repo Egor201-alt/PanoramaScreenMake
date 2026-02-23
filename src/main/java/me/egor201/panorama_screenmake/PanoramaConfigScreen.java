@@ -31,12 +31,13 @@ public class PanoramaConfigScreen {
             .build()
         );
 
-        general.addEntry(entryBuilder.startIntSlider(
+        general.addEntry(entryBuilder.startIntField(
                 Text.translatable("config.panoramascreenmake.option.delay"),
-                ModConfig.INSTANCE.delaySeconds,
-                0, 10
+                ModConfig.INSTANCE.delaySeconds
             )
             .setDefaultValue(0)
+            .setMin(0)
+            .setMax(10)
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.delay"))
             .build()
