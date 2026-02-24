@@ -8,17 +8,15 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class PanoramaCraft implements ClientModInitializer {
-    
-    public static boolean isCapturingPanorama = false; 
+
+    public static boolean isCapturingPanorama = false;
+    public static int captureResolution = 1024;
+    private static PanoramaCaptureTask captureTask = null;
 
     private int tickCounter = 0;
     private boolean isTimerActive = false;
@@ -41,6 +39,13 @@ public class PanoramaCraft implements ClientModInitializer {
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (captureTask != null) {
+                if (captureTask.tick(client)) {
+                    captureTask = null;
+                }
+                return;
+            }
+
             while (panoramaKeyBinding.wasPressed()) {
                 if (client.player == null || client.isPaused()) return;
 
@@ -51,7 +56,7 @@ public class PanoramaCraft implements ClientModInitializer {
                     tickCounter = delaySec * 20;
                     client.player.sendMessage(Text.translatable("panorama.message.timer_start", delaySec), true);
                 } else if (delaySec == 0) {
-                    takePanoramaScreenshot(client);
+                    startPanoramaCapture(client);
                 }
             }
 
@@ -69,16 +74,15 @@ public class PanoramaCraft implements ClientModInitializer {
 
                 if (tickCounter <= 0) {
                     isTimerActive = false;
-                    takePanoramaScreenshot(client);
+                    startPanoramaCapture(client);
                 }
             }
         });
     }
 
-    private void takePanoramaScreenshot(MinecraftClient client) {
+    private void startPanoramaCapture(MinecraftClient client) {
         File runDir = client.runDirectory;
         String configPath = ModConfig.INSTANCE.savePath;
-        
         File baseDir = new File(runDir, (configPath == null || configPath.trim().isEmpty()) ? "panoramas" : configPath);
         
         if (!baseDir.exists()) {
@@ -88,60 +92,10 @@ public class PanoramaCraft implements ClientModInitializer {
         File finalSessionDir = getNextFreeDirectory(baseDir);
         finalSessionDir.mkdirs();
 
-        try {
-            isCapturingPanorama = true;
-            
-            Text resultMessage = client.takePanorama(finalSessionDir);
+        int targetRes = ModConfig.INSTANCE.resolution;
+        if (targetRes <= 0) targetRes = 1024;
 
-            if (resultMessage != null) {
-                client.player.sendMessage(resultMessage, false);
-                processFilesAsync(finalSessionDir);
-            }
-        } catch (Exception e) {
-            client.player.sendMessage(Text.literal("Error taking panorama!"), false);
-            e.printStackTrace();
-        } finally {
-            isCapturingPanorama = false;
-        }
-    }
-
-    private void processFilesAsync(File finalSessionDir) {
-        Util.getIoWorkerExecutor().execute(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ignored) {}
-
-            File screenshotsSubDir = new File(finalSessionDir, "screenshots");
-            
-            if (screenshotsSubDir.exists() && screenshotsSubDir.isDirectory()) {
-                
-                for (int i = 0; i < 6; i++) {
-                    File src = new File(screenshotsSubDir, "screenshots/panorama_" + i + ".png");
-                    if(!src.exists()){
-                        src = new File(screenshotsSubDir, "panorama_" + i + ".png");
-                    }
-                    File dest = new File(finalSessionDir, "panorama_" + i + ".png");
-
-                    if (src.exists()) {
-                        try {
-                            Files.move(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            try {
-                                Files.copy(src.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                src.delete();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                }
-                
-                String[] list = screenshotsSubDir.list();
-                if (list != null && list.length == 0) {
-                    screenshotsSubDir.delete();
-                }
-            }
-        });
+        captureTask = new PanoramaCaptureTask(finalSessionDir, targetRes);
     }
 
     private File getNextFreeDirectory(File baseDir) {
