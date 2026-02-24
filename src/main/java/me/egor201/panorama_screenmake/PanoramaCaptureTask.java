@@ -4,7 +4,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.util.Window;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
 import java.io.File;
@@ -60,8 +62,12 @@ public class PanoramaCaptureTask {
                         image.writeTo(file);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        MinecraftClient.getInstance().execute(() -> {
+                            MinecraftClient.getInstance().inGameHud.setTitle(Text.literal("Error!").formatted(Formatting.RED));
+                            MinecraftClient.getInstance().inGameHud.setTitleTicks(10, 40, 20);
+                        });
                     } finally {
-                        image.close();
+                        image.close(); 
                     }
                 });
             });
@@ -83,8 +89,20 @@ public class PanoramaCaptureTask {
             PanoramaCraft.captureResolution = 0;
             client.getFramebuffer().resize(oldWidth, oldHeight);
 
-            client.player.sendMessage(Text.literal("Panorama successfully saved to " + directory.getName() + " in " + resolution + "x" + resolution + "!"), false);
-            return true;
+            Text link = Text.literal(directory.getName())
+                    .styled(style -> style
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, directory.getAbsolutePath()))
+                            .withFormatting(Formatting.UNDERLINE)
+                            .withFormatting(Formatting.AQUA)
+                    );
+
+            client.player.sendMessage(Text.literal("Panorama successfully saved to ").append(link), false);
+
+            client.inGameHud.setTitle(Text.literal("Panorama Saved!").formatted(Formatting.GREEN));
+            client.inGameHud.setTitleTicks(10, 40, 20);
+            client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F));
+
+            return true; 
         }
 
         return false;
