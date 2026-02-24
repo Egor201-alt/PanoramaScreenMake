@@ -3,8 +3,8 @@
   "package": "me.egor201.panorama_screenmake.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "SimpleFramebufferMixin",
-    "NativeImageMixin"
+    "MinecraftClientMixin",
+    "FrustumMixin"
   ],
   "injectors": {
     "defaultRequire": 1
