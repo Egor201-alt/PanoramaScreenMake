@@ -67,12 +67,10 @@ public class PanoramaCraft implements ClientModInitializer {
                     return;
                 }
 
-                tickCounter--;
-
-                int maxSec = ModConfig.INSTANCE.delaySeconds;
-                int currentSec = (int) Math.ceil(tickCounter / 20.0f);
-
                 if (tickCounter % 20 == 0 && tickCounter > 0) {
+                    int maxSec = ModConfig.INSTANCE.delaySeconds;
+                    int currentSec = tickCounter / 20;
+
                     float progress = (float) currentSec / maxSec; 
                     int r = (int) (progress * 255);
                     int g = (int) ((1.0f - progress) * 255);
@@ -86,6 +84,8 @@ public class PanoramaCraft implements ClientModInitializer {
 
                     client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.2F));
                 }
+
+                tickCounter--; 
 
                 if (tickCounter <= 0) {
                     isTimerActive = false;
