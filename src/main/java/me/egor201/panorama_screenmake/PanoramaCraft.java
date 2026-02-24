@@ -11,6 +11,8 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PanoramaCraft implements ClientModInitializer {
 
@@ -41,7 +43,7 @@ public class PanoramaCraft implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (captureTask != null) {
                 if (captureTask.tick(client)) {
-                    captureTask = null;
+                    captureTask = null; 
                 }
                 return;
             }
@@ -54,7 +56,6 @@ public class PanoramaCraft implements ClientModInitializer {
                 if (delaySec > 0 && !isTimerActive) {
                     isTimerActive = true;
                     tickCounter = delaySec * 20;
-                    client.player.sendMessage(Text.translatable("panorama.message.timer_start", delaySec), true);
                 } else if (delaySec == 0) {
                     startPanoramaCapture(client);
                 }
@@ -68,12 +69,27 @@ public class PanoramaCraft implements ClientModInitializer {
 
                 tickCounter--;
 
+                int maxSec = ModConfig.INSTANCE.delaySeconds;
+                int currentSec = (int) Math.ceil(tickCounter / 20.0f);
+
                 if (tickCounter % 20 == 0 && tickCounter > 0) {
-                    client.player.sendMessage(Text.translatable("panorama.message.timer_tick", tickCounter / 20), true);
+                    float progress = (float) currentSec / maxSec;
+                    int r = (int) (progress * 255);
+                    int g = (int) ((1.0f - progress) * 255);
+                    int color = (r << 16) | (g << 8);
+
+                    Text titleText = Text.literal(String.valueOf(currentSec))
+                            .setStyle(net.minecraft.text.Style.EMPTY.withColor(color));
+                    
+                    client.inGameHud.setTitle(titleText);
+                    client.inGameHud.setTitleTicks(2, 16, 2);
+
+                    client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.2F));
                 }
 
                 if (tickCounter <= 0) {
                     isTimerActive = false;
+                    client.inGameHud.setTitle(Text.empty());
                     startPanoramaCapture(client);
                 }
             }
@@ -99,13 +115,15 @@ public class PanoramaCraft implements ClientModInitializer {
     }
 
     private File getNextFreeDirectory(File baseDir) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String folderName = LocalDateTime.now().format(formatter);
+        File check = new File(baseDir, folderName);
+        
         int id = 1;
-        while (true) {
-            File check = new File(baseDir, "panorama_" + id);
-            if (!check.exists()) {
-                return check;
-            }
+        while (check.exists()) {
+            check = new File(baseDir, folderName + "_" + id);
             id++;
         }
+        return check;
     }
 }
