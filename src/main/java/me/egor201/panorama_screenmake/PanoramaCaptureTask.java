@@ -91,7 +91,7 @@ public class PanoramaCaptureTask {
 
             Text link = Text.literal(directory.getName())
                     .styled(style -> style
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, directory.getAbsolutePath()))
+                            .withClickEvent(new ClickEvent.OpenFile(directory.getAbsolutePath()))
                             .withFormatting(Formatting.UNDERLINE)
                             .withFormatting(Formatting.AQUA)
                     );
@@ -100,7 +100,8 @@ public class PanoramaCaptureTask {
 
             client.inGameHud.setTitle(Text.literal("Panorama Saved!").formatted(Formatting.GREEN));
             client.inGameHud.setTitleTicks(10, 40, 20);
-            client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F));
+            
+            client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP.value(), 1.0F, 1.0F));
 
             return true; 
         }
