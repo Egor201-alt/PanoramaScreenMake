@@ -42,7 +42,7 @@ public class PanoramaCaptureTask {
 
             PanoramaCraft.isCapturingPanorama = true;
             PanoramaCraft.captureResolution = resolution;
-          
+
             client.getFramebuffer().resize(resolution, resolution);
 
             setAngle(0);
@@ -52,17 +52,18 @@ public class PanoramaCaptureTask {
 
         if (frame >= 1 && frame <= 6) {
             int faceIndex = frame - 1;
-
-            NativeImage image = ScreenshotRecorder.takeScreenshot(client.getFramebuffer());
             File file = new File(directory, "panorama_" + faceIndex + ".png");
 
-            Util.getIoWorkerExecutor().execute(() -> {
-                try {
-                    image.writeTo(file);
-                    image.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), (NativeImage image) -> {
+                Util.getIoWorkerExecutor().execute(() -> {
+                    try {
+                        image.writeTo(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        image.close();
+                    }
+                });
             });
 
             if (frame < 6) {
@@ -79,6 +80,7 @@ public class PanoramaCaptureTask {
             client.player.setPitch(oldPitch);
             client.options.hudHidden = oldHideGui;
 
+            PanoramaCraft.captureResolution = 0;
             client.getFramebuffer().resize(oldWidth, oldHeight);
 
             client.player.sendMessage(Text.literal("Panorama successfully saved to " + directory.getName() + " in " + resolution + "x" + resolution + "!"), false);
@@ -90,6 +92,8 @@ public class PanoramaCaptureTask {
 
     private void setAngle(int face) {
         MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null) return;
+        
         float yaw = 0;
         float pitch = 0;
         switch(face) {
