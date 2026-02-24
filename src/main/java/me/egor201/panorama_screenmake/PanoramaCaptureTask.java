@@ -101,7 +101,7 @@ public class PanoramaCaptureTask {
             client.inGameHud.setTitle(Text.literal("Panorama Saved!").formatted(Formatting.GREEN));
             client.inGameHud.setTitleTicks(10, 40, 20);
             
-            client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP.value(), 1.0F, 1.0F));
+            client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F));
 
             return true; 
         }
