@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class PanoramaCraft implements ClientModInitializer {
-
+    
     public static boolean isCapturingPanorama = false; 
 
     private int tickCounter = 0;
@@ -89,7 +89,7 @@ public class PanoramaCraft implements ClientModInitializer {
         finalSessionDir.mkdirs();
 
         try {
-            isCapturingPanorama = true; 
+            isCapturingPanorama = true;
             
             Text resultMessage = client.takePanorama(finalSessionDir);
 
@@ -101,7 +101,7 @@ public class PanoramaCraft implements ClientModInitializer {
             client.player.sendMessage(Text.literal("Error taking panorama!"), false);
             e.printStackTrace();
         } finally {
-            isCapturingPanorama = false; 
+            isCapturingPanorama = false;
         }
     }
 
