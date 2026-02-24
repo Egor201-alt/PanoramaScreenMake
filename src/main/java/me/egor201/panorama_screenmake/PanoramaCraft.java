@@ -73,10 +73,10 @@ public class PanoramaCraft implements ClientModInitializer {
                 int currentSec = (int) Math.ceil(tickCounter / 20.0f);
 
                 if (tickCounter % 20 == 0 && tickCounter > 0) {
-                    float progress = (float) currentSec / maxSec;
+                    float progress = (float) currentSec / maxSec; 
                     int r = (int) (progress * 255);
                     int g = (int) ((1.0f - progress) * 255);
-                    int color = (r << 16) | (g << 8);
+                    int color = (r << 16) | (g << 8); 
 
                     Text titleText = Text.literal(String.valueOf(currentSec))
                             .setStyle(net.minecraft.text.Style.EMPTY.withColor(color));
@@ -84,12 +84,12 @@ public class PanoramaCraft implements ClientModInitializer {
                     client.inGameHud.setTitle(titleText);
                     client.inGameHud.setTitleTicks(2, 16, 2);
 
-                    client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.2F));
+                    client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.2F));
                 }
 
                 if (tickCounter <= 0) {
                     isTimerActive = false;
-                    client.inGameHud.setTitle(Text.empty());
+                    client.inGameHud.setTitle(Text.empty()); 
                     startPanoramaCapture(client);
                 }
             }
