@@ -30,7 +30,7 @@
       	"fabric": "*",
       	"minecraft": ">=1.21.6 <1.22.0",
       	"java": ">=21",
-		"cloth-config": ">=20.0.0"
+		"yacl": ">=3.8.0"
     },
 	"suggests": {
   		"modmenu": ">=15.0.0"
