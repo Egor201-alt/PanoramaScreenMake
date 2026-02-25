@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -55,7 +56,7 @@ public class PanoramaCraft implements ClientModInitializer {
 
                 if (delaySec > 0 && !isTimerActive) {
                     isTimerActive = true;
-                    tickCounter = delaySec * 20;
+                    tickCounter = delaySec * 20; 
                 } else if (delaySec == 0) {
                     startPanoramaCapture(client);
                 }
@@ -63,7 +64,13 @@ public class PanoramaCraft implements ClientModInitializer {
 
             if (isTimerActive) {
                 if (client.player == null) {
-                    isTimerActive = false;
+                    stopTimer(client);
+                    return;
+                }
+
+                if (client.currentScreen != null) {
+                    stopTimer(client);
+                    client.player.sendMessage(Text.literal("Panorama cancelled (Menu opened)").formatted(Formatting.RED), true);
                     return;
                 }
 
@@ -80,14 +87,14 @@ public class PanoramaCraft implements ClientModInitializer {
                             .setStyle(net.minecraft.text.Style.EMPTY.withColor(color));
                     
                     client.inGameHud.setTitle(titleText);
-                    client.inGameHud.setTitleTicks(2, 16, 2);
+                    client.inGameHud.setTitleTicks(0, 25, 5);
 
                     client.getSoundManager().play(net.minecraft.client.sound.PositionedSoundInstance.master(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.2F));
                 }
 
-                tickCounter--; 
+                tickCounter--;
 
-                if (tickCounter <= 0) {
+                if (tickCounter < 0) {
                     isTimerActive = false;
                     client.inGameHud.setTitle(Text.empty()); 
                     startPanoramaCapture(client);
@@ -96,10 +103,19 @@ public class PanoramaCraft implements ClientModInitializer {
         });
     }
 
+    private void stopTimer(MinecraftClient client) {
+        isTimerActive = false;
+        tickCounter = 0;
+        client.inGameHud.setTitle(Text.empty());
+    }
+
     private void startPanoramaCapture(MinecraftClient client) {
         File runDir = client.runDirectory;
         String configPath = ModConfig.INSTANCE.savePath;
-        File baseDir = new File(runDir, (configPath == null || configPath.trim().isEmpty()) ? "panoramas" : configPath);
+        
+        String cleanPath = configPath.startsWith("/") ? configPath.substring(1) : configPath;
+        
+        File baseDir = new File(runDir, cleanPath);
         
         if (!baseDir.exists()) {
             baseDir.mkdirs();
