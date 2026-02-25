@@ -45,8 +45,10 @@ public class PanoramaConfigScreen {
                 0, 5
             )
             .setDefaultValue(0)
+            .setMin(0)
+            .setMax(5)
             .setTextGetter(val -> {
-                if (val == 0) return Text.translatable("config.panoramascreenmake.value.instant");
+                if (val <= 0) return Text.translatable("config.panoramascreenmake.value.instant");
                 return Text.translatable("config.panoramascreenmake.value.seconds", val);
             })
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue)
