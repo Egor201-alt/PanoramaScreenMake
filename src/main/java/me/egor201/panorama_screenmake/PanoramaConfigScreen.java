@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,15 +31,19 @@ public class PanoramaConfigScreen {
                 DropdownMenuBuilder.TopCellElementBuilder.of(
                     ModConfig.INSTANCE.resolution,
                     str -> { 
-                        try { return Integer.parseInt(str); } 
-                        catch (NumberFormatException e) { return 1024; } 
+                        try { 
+                            String num = str.split("x")[0].trim();
+                            return Integer.parseInt(num); 
+                        } catch (Exception e) { 
+                            return 1024; 
+                        } 
                     },
-                    String::valueOf
+                    val -> Text.literal(val + "x" + val) 
                 ),
-                DropdownMenuBuilder.CellCreatorBuilder.of()
+                DropdownMenuBuilder.CellCreatorBuilder.of(val -> Text.literal(val + "x" + val))
             )
             .setDefaultValue(1024)
-            .setSelections(java.util.Arrays.asList(1024, 2048, 4096, 8192))
+            .setSelections(Arrays.asList(1024, 2048, 4096, 8192))
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.resolution = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.resolution"))
             .build()
@@ -46,9 +51,9 @@ public class PanoramaConfigScreen {
 
         general.addEntry(entryBuilder.startLongSlider(
                 Text.translatable("config.panoramascreenmake.option.delay"),
-                (long) ModConfig.INSTANCE.delaySeconds,
-                0L,
-                5L
+                (long) ModConfig.INSTANCE.delaySeconds, 
+                0L, 
+                5L  
             )
             .setDefaultValue(0L)
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue.intValue())
