@@ -3,6 +3,7 @@ package me.egor201.panorama_screenmake;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -24,34 +25,37 @@ public class PanoramaConfigScreen {
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
         ConfigCategory general = builder.getOrCreateCategory(Text.translatable("config.panoramascreenmake.category.general"));
 
-        general.addEntry(entryBuilder.startSelector(
+        general.addEntry(entryBuilder.startDropdownMenu(
                 Text.translatable("config.panoramascreenmake.option.resolution"),
-                new Integer[]{1024, 2048, 4096, 8192},
-                ModConfig.INSTANCE.resolution
+                DropdownMenuBuilder.TopCellElementBuilder.of(
+                    ModConfig.INSTANCE.resolution,
+                    str -> { 
+                        try { return Integer.parseInt(str); } 
+                        catch (NumberFormatException e) { return 1024; } 
+                    },
+                    String::valueOf
+                ),
+                DropdownMenuBuilder.CellCreatorBuilder.of()
             )
             .setDefaultValue(1024)
-            .setNameProvider(val -> {
-                if (val == 1024) return Text.literal("1024x1024 (Standard)");
-                return Text.literal(val + "x" + val);
-            })
+            .setSelections(java.util.Arrays.asList(1024, 2048, 4096, 8192))
             .setSaveConsumer(newValue -> ModConfig.INSTANCE.resolution = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.resolution"))
             .build()
         );
 
-        general.addEntry(entryBuilder.startIntSlider(
+        general.addEntry(entryBuilder.startLongSlider(
                 Text.translatable("config.panoramascreenmake.option.delay"),
-                ModConfig.INSTANCE.delaySeconds,
-                0, 5
+                (long) ModConfig.INSTANCE.delaySeconds,
+                0L,
+                5L
             )
-            .setDefaultValue(0)
-            .setMin(0)
-            .setMax(5)
+            .setDefaultValue(0L)
+            .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue.intValue())
             .setTextGetter(val -> {
                 if (val <= 0) return Text.translatable("config.panoramascreenmake.value.instant");
                 return Text.translatable("config.panoramascreenmake.value.seconds", val);
             })
-            .setSaveConsumer(newValue -> ModConfig.INSTANCE.delaySeconds = newValue)
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.delay"))
             .build()
         );
@@ -63,6 +67,8 @@ public class PanoramaConfigScreen {
             .setDefaultValue("/panoramas")
             .setTooltip(Text.translatable("config.panoramascreenmake.tooltip.path"))
             .setErrorSupplier(val -> {
+                if (val == null || val.trim().isEmpty()) return Optional.empty();
+
                 if (!val.startsWith("/")) {
                     return Optional.of(Text.translatable("config.panoramascreenmake.error.slash").formatted(Formatting.RED));
                 }
