@@ -18,10 +18,14 @@
   "config.panoramascreenmake.value.seconds": "%s sec.",
   "config.panoramascreenmake.tooltip.delay": "Time to hide UI or hands before shooting.",
   
-  "config.panoramascreenmake.option.path": "Save Folder Name",
-  "config.panoramascreenmake.tooltip.path": "Folder inside game directory.\nLeave empty for 'panoramas'.",
+  "config.panoramascreenmake.option.path": "Save Path",
+  "config.panoramascreenmake.tooltip.path": "Folder inside game directory.\nStart with '/' (e.g. /panoramas).",
   
   "panorama.message.timer_start": "Panorama in %s seconds...",
   "panorama.message.timer_tick": "Snapshot in: %s",
-  "panorama.message.success": "Saved to: %s"
+  "panorama.message.success": "Saved to: %s",
+
+  "config.panoramascreenmake.error.slash": "Path must start with '/'",
+  "config.panoramascreenmake.error.short": "Folder name is too short",
+  "config.panoramascreenmake.error.forbidden": "Cannot save to system game folders!"
 }
