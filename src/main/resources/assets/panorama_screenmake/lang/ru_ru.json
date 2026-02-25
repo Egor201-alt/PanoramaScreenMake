@@ -1,27 +1,24 @@
 {
   "modmenu.nameTranslation.panoramascreenmake": "Panorama ScreenMake",
-  "modmenu.descriptionTranslation.modmenu": "Используйте скрытый код Mojang, чтобы быстро делать панорамы!",
+  "modmenu.descriptionTranslation.modmenu": "Быстрое создание панорам в высоком качестве (до 8K)!",
   
   "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Сделать панораму",
-  "panscreenmake.success": "Панорама успешно сохранена в папку %s",
   
   "config.panoramascreenmake.title": "Настройки Panorama ScreenMake",
   "config.panoramascreenmake.category.general": "Основные",
   
   "config.panoramascreenmake.option.resolution": "Разрешение снимка",
-  "config.panoramascreenmake.value.default": "Размер окна (Стандарт)",
-  "config.panoramascreenmake.tooltip.resolution": "Фиксированное разрешение для панорам.\nБольшие значения могут вызывать лаги.",
+  "config.panoramascreenmake.tooltip.resolution": "Разрешение каждой стороны куба панорамы.\n4096 и выше требуют мощную видеокарту.",
   
   "config.panoramascreenmake.option.delay": "Задержка перед снимком",
   "config.panoramascreenmake.value.instant": "Моментально",
   "config.panoramascreenmake.value.seconds": "%s сек.",
-  "config.panoramascreenmake.tooltip.delay": "Время, чтобы успеть спрятать интерфейс (F1)\nили отбежать перед снимком.",
+  "config.panoramascreenmake.tooltip.delay": "Время, чтобы спрятать руки или занять позицию.",
   
-  "config.panoramascreenmake.option.path": "Имя папки для сохранения",
-  "config.panoramascreenmake.tooltip.path": "Папка внутри директории игры.\nОставьте пустым, чтобы сохранять в 'panoramas'.",
-  
-  "panorama.message.timer_start": "Панорама будет сделана через %s сек...",
-  "panorama.message.timer_tick": "Снимок через: %s",
-  "panorama.message.success": "Сохранено в: %s"
+  "config.panoramascreenmake.option.path": "Путь для сохранения",
+  "config.panoramascreenmake.tooltip.path": "Относительный путь от папки игры.\nПример: /panoramas",
+  "config.panoramascreenmake.error.slash": "Путь должен начинаться с '/'",
+  "config.panoramascreenmake.error.short": "Слишком короткое имя папки",
+  "config.panoramascreenmake.error.forbidden": "Нельзя сохранять в системные папки игры!"
 }
