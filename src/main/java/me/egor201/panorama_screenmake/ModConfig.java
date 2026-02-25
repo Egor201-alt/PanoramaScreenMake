@@ -17,7 +17,7 @@ public class ModConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public int resolution = 1024;
-    public String savePath = "";
+    public String savePath = "/panoramas";
     public int delaySeconds = 0;
 
     public static void load() {
@@ -25,9 +25,10 @@ public class ModConfig {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
                 ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
                 if (loaded != null) {
-                    INSTANCE.resolution = loaded.resolution;
-                    INSTANCE.savePath = loaded.savePath != null ? loaded.savePath : "";
-                    INSTANCE.delaySeconds = Math.max(0, Math.min(10, loaded.delaySeconds));
+                    INSTANCE.resolution = loaded.resolution > 0 ? loaded.resolution : 1024;
+
+                    INSTANCE.savePath = (loaded.savePath == null || loaded.savePath.isEmpty()) ? "/panoramas" : loaded.savePath;
+                    INSTANCE.delaySeconds = Math.max(0, Math.min(5, loaded.delaySeconds)); 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
