@@ -6,6 +6,10 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+base {
+    archivesName = project.archives_base_name
+}
+
 repositories {
     maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
     maven {
@@ -38,7 +42,7 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     // YACL
-    modImplementation("dev.isxander:yet-another-config-lib:3.8.1+1.21.11-fabric")
+    modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 }
 
 processResources {
@@ -67,13 +71,12 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = project.archives_base_name
     withSourcesJar()
 }
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        rename { "${it}_${project.base.archivesName.get()}"}
     }
 }
 
