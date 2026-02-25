@@ -1,24 +1,31 @@
 {
   "modmenu.nameTranslation.panoramascreenmake": "Panorama ScreenMake",
-  "modmenu.descriptionTranslation.modmenu": "Быстрое создание панорам в высоком качестве (до 8K)!",
+  "modmenu.descriptionTranslation.modmenu": "Используйте неиспользуемый код моджангов чтобы быстро делать панорамы!",
   
   "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Сделать панораму",
+  "panscreenmake.success": "Панорама успешно сохранена в папку %s",
   
   "config.panoramascreenmake.title": "Настройки Panorama ScreenMake",
   "config.panoramascreenmake.category.general": "Основные",
   
   "config.panoramascreenmake.option.resolution": "Разрешение снимка",
-  "config.panoramascreenmake.tooltip.resolution": "Разрешение каждой стороны куба панорамы.\n4096 и выше требуют мощную видеокарту.",
+  "config.panoramascreenmake.value.default": "Размер окна (По умолчанию)",
+  "config.panoramascreenmake.tooltip.resolution": "Фиксированное разрешение для панорам.\nБольшие значения могут вызывать лаги.",
   
   "config.panoramascreenmake.option.delay": "Задержка перед снимком",
   "config.panoramascreenmake.value.instant": "Моментально",
   "config.panoramascreenmake.value.seconds": "%s сек.",
-  "config.panoramascreenmake.tooltip.delay": "Время, чтобы спрятать руки или занять позицию.",
+  "config.panoramascreenmake.tooltip.delay": "Время чтобы спрятать интерфейс или руки перед снимком.",
   
-  "config.panoramascreenmake.option.path": "Путь для сохранения",
-  "config.panoramascreenmake.tooltip.path": "Относительный путь от папки игры.\nПример: /panoramas",
+  "config.panoramascreenmake.option.path": "Путь сохранения",
+  "config.panoramascreenmake.tooltip.path": "Папка внутри директории игры.\nНачинайте с '/' (например /panoramas).",
+  
+  "panorama.message.timer_start": "Панорама через %s сек...",
+  "panorama.message.timer_tick": "Снимок через: %s",
+  "panorama.message.success": "Сохранено в: %s",
+
   "config.panoramascreenmake.error.slash": "Путь должен начинаться с '/'",
   "config.panoramascreenmake.error.short": "Слишком короткое имя папки",
-  "config.panoramascreenmake.error.forbidden": "Нельзя сохранять в системные папки игры!"
+  "config.panoramascreenmake.error.forbidden": "Нельзя сохранять в системные папки!"
 }
