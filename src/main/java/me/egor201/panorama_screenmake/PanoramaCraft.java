@@ -89,7 +89,7 @@ public class PanoramaCraft implements ClientModInitializer {
                     client.inGameHud.setTitle(titleText);
                     client.inGameHud.setTitleTicks(0, 25, 5);
 
-                    client.player.playSound(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.2F);
+                    client.player.playSound(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.2F);
                 }
 
                 tickCounter--;
