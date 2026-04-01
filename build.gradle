@@ -77,7 +77,9 @@ base {
 }
 
 loom {
-    // Nothing :/
+    officialMojangMappings()
+    
+    accessWidenerPath = file("src/main/resources/panoramascreenmake.accesswidener")
 }
 
 // configure the maven publication
