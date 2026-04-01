@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "me.egor201.panorama_screenmake.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "WindowMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

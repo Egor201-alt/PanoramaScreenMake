@@ -7,17 +7,22 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PanoramaCraft implements ClientModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("panorama_craft");
 
-    private static File PANO_DIR;
+    public static boolean isCapturingPanorama = false;
+    public static int captureResolution = 1024;
+    private static PanoramaCaptureTask captureTask = null;
+
+    private int tickCounter = 0;
+    private boolean isTimerActive = false;
 
     private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
         Identifier.of("panoramascreenmake", "main")
@@ -25,7 +30,7 @@ public class PanoramaCraft implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        PANO_DIR = new File(MinecraftClient.getInstance().runDirectory, "panoramas");
+        ModConfig.load();
 
         KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
@@ -37,17 +42,104 @@ public class PanoramaCraft implements ClientModInitializer {
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (captureTask != null) {
+                if (captureTask.tick(client)) {
+                    captureTask = null; 
+                }
+                return;
+            }
+
             while (panoramaKeyBinding.wasPressed()) {
-                if (client.player != null && !client.isPaused()) {
-                    PANO_DIR.mkdirs();
-                    //
-                    Text resultMessage = client.takePanorama(PANO_DIR);
-                    //
-                    if (resultMessage != null) {
-                        client.player.sendMessage(resultMessage, false);
-                    }
+                if (client.player == null || client.isPaused()) return;
+
+                int delaySec = ModConfig.INSTANCE.delaySeconds;
+
+                if (delaySec > 0 && !isTimerActive) {
+                    isTimerActive = true;
+                    tickCounter = delaySec * 20; 
+                } else if (delaySec == 0) {
+                    startPanoramaCapture(client);
+                }
+            }
+
+            if (isTimerActive) {
+                if (client.player == null) {
+                    stopTimer(client);
+                    return;
+                }
+
+                if (client.currentScreen != null) {
+                    stopTimer(client);
+                    client.player.sendMessage(Text.literal("Panorama cancelled (Menu opened)").formatted(Formatting.RED), true);
+                    return;
+                }
+
+                if (tickCounter % 20 == 0 && tickCounter > 0) {
+                    int maxSec = ModConfig.INSTANCE.delaySeconds;
+                    int currentSec = tickCounter / 20;
+
+                    float progress = (float) currentSec / maxSec; 
+                    int r = (int) (progress * 255);
+                    int g = (int) ((1.0f - progress) * 255);
+                    int color = (r << 16) | (g << 8); 
+
+                    Text titleText = Text.literal(String.valueOf(currentSec))
+                            .setStyle(net.minecraft.text.Style.EMPTY.withColor(color));
+                    
+                    client.inGameHud.setTitle(titleText);
+                    client.inGameHud.setTitleTicks(0, 25, 5);
+
+                    client.player.playSound(net.minecraft.sound.SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.2F);
+                }
+
+                tickCounter--;
+
+                if (tickCounter < 0) {
+                    isTimerActive = false;
+                    client.inGameHud.setTitle(Text.empty()); 
+                    startPanoramaCapture(client);
                 }
             }
         });
+    }
+
+    private void stopTimer(MinecraftClient client) {
+        isTimerActive = false;
+        tickCounter = 0;
+        client.inGameHud.setTitle(Text.empty());
+    }
+
+    private void startPanoramaCapture(MinecraftClient client) {
+        File runDir = client.runDirectory;
+        String configPath = ModConfig.INSTANCE.savePath;
+        
+        String cleanPath = configPath.startsWith("/") ? configPath.substring(1) : configPath;
+        
+        File baseDir = new File(runDir, cleanPath);
+        
+        if (!baseDir.exists()) {
+            baseDir.mkdirs();
+        }
+
+        File finalSessionDir = getNextFreeDirectory(baseDir);
+        finalSessionDir.mkdirs();
+
+        int targetRes = ModConfig.INSTANCE.resolution;
+        if (targetRes <= 0) targetRes = 1024;
+
+        captureTask = new PanoramaCaptureTask(finalSessionDir, targetRes);
+    }
+
+    private File getNextFreeDirectory(File baseDir) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String folderName = LocalDateTime.now().format(formatter);
+        File check = new File(baseDir, folderName);
+        
+        int id = 1;
+        while (check.exists()) {
+            check = new File(baseDir, folderName + "_" + id);
+            id++;
+        }
+        return check;
     }
 }

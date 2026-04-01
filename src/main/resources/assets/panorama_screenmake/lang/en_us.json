@@ -1,5 +1,31 @@
 {
+  "modmenu.nameTranslation.panoramascreenmake": "Panorama ScreenMake",
+  "modmenu.descriptionTranslation.modmenu": "Use unused Mojang code to quickly take panoramas!",
+  
   "key.category.panoramascreenmake.main": "Panorama ScreenMake",
   "key.panoramascreenmake.take": "Take Panorama",
-  "panscreenmake.success": "Panorama successfully saved to folder %s"
+  "panscreenmake.success": "Panorama successfully saved to folder %s",
+  
+  "config.panoramascreenmake.title": "Panorama ScreenMake Config",
+  "config.panoramascreenmake.category.general": "General",
+  
+  "config.panoramascreenmake.option.resolution": "Screenshot Resolution",
+  "config.panoramascreenmake.value.default": "Window Size (Default)",
+  "config.panoramascreenmake.tooltip.resolution": "Fixed resolution for panorama images.\nHigher values may lag.",
+  
+  "config.panoramascreenmake.option.delay": "Delay Before Shot",
+  "config.panoramascreenmake.value.instant": "Instant",
+  "config.panoramascreenmake.value.seconds": "%s sec.",
+  "config.panoramascreenmake.tooltip.delay": "Time to hide UI or hands before shooting.",
+  
+  "config.panoramascreenmake.option.path": "Save Path",
+  "config.panoramascreenmake.tooltip.path": "Folder inside game directory.\nStart with '/' (e.g. /panoramas).",
+  
+  "panorama.message.timer_start": "Panorama in %s seconds...",
+  "panorama.message.timer_tick": "Snapshot in: %s",
+  "panorama.message.success": "Saved to: %s",
+
+  "config.panoramascreenmake.error.slash": "Path must start with '/'",
+  "config.panoramascreenmake.error.short": "Folder name is too short",
+  "config.panoramascreenmake.error.forbidden": "Cannot save to system game folders!"
 }

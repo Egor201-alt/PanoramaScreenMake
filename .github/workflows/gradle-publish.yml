@@ -2,9 +2,9 @@ name: Build Mod
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, big-update ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, big-update ]
   workflow_dispatch:
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
