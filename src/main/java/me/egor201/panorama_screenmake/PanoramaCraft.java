@@ -3,11 +3,11 @@ package me.egor201.panorama_screenmake;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +20,12 @@ public class PanoramaCraft implements ClientModInitializer {
     private static File PANO_DIR;
 
     private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
-        Identifier.of("panoramascreenmake", "main")
+        ResourceLocation.parse("panoramascreenmake:main")
     );
 
     @Override
     public void onInitializeClient() {
-        PANO_DIR = new File(MinecraftClient.getInstance().runDirectory, "panoramas");
+        PANO_DIR = new File(Minecraft.getInstance().gameDirectory, "panoramas");
 
         KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
@@ -37,12 +37,12 @@ public class PanoramaCraft implements ClientModInitializer {
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (panoramaKeyBinding.wasPressed()) {
+            while (panoramaKeyBinding.consumeClick()) {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
-                    //
+
                     Text resultMessage = client.takePanorama(PANO_DIR);
-                    //
+                    
                     if (resultMessage != null) {
                         client.player.sendMessage(resultMessage, false);
                     }
