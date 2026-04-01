@@ -11,14 +11,8 @@ base {
 }
 
 repositories {
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-    }
-    maven {
-        name = "Terraformers"
-        url = "https://maven.terraformersmc.com/"
-    }
+    mavenCentral()
+    maven { url = "https://maven.fabricmc.net/" }
 }
 
 loom {
