@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class PanoramaCraft implements ClientModInitializer {
     private static File PANO_DIR;
 
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
-        ResourceLocation.parse("panoramascreenmake:main")
+        Identifier.parse("panoramascreenmake:main")
     );
 
     @Override
@@ -41,10 +41,10 @@ public class PanoramaCraft implements ClientModInitializer {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
 
-                    Component resultMessage = client.takePanorama(PANO_DIR, 1024, 1024);
+                    Component resultMessage = client.takePanorama(PANO_DIR.toPath(), 1024, 1024);
                     
                     if (resultMessage != null) {
-                        client.gui.getChat().addMessage(resultMessage);
+                        client.player.sendSystemMessage(resultMessage);
                     }
                 }
             }
