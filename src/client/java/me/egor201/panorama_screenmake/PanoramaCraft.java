@@ -41,7 +41,7 @@ public class PanoramaCraft implements ClientModInitializer {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
 
-                    Component resultMessage = client.grabPanoramixScreenshot(PANO_DIR.toPath());
+                    Component resultMessage = client.grabPanoramixScreenshot(PANO_DIR);
                     
                     if (resultMessage != null) {
                         client.player.sendSystemMessage(resultMessage);
