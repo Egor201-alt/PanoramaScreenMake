@@ -1,13 +1,12 @@
 package me.egor201.panorama_screenmake;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +18,16 @@ public class PanoramaCraft implements ClientModInitializer {
 
     private static File PANO_DIR;
 
-    private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
-        ResourceLocation.parse("panoramascreenmake:main")
-    );
+    private static final String CATEGORY = "panoramascreenmake.main";
 
     @Override
     public void onInitializeClient() {
         PANO_DIR = new File(Minecraft.getInstance().gameDirectory, "panoramas");
 
-        KeyBinding panoramaKeyBinding = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding(
+        KeyMapping panoramaKeyBinding = KeyMappingHelper.registerKeyMapping(
+            new KeyMapping(
                 "key.panoramascreenmake.take", 
-                InputUtil.Type.KEYSYM,          
+                InputConstants.Type.KEYSYM,          
                 GLFW.GLFW_KEY_F4,            
                 CATEGORY                        
             )
@@ -41,10 +38,10 @@ public class PanoramaCraft implements ClientModInitializer {
                 if (client.player != null && !client.isPaused()) {
                     PANO_DIR.mkdirs();
 
-                    Text resultMessage = client.takePanorama(PANO_DIR);
+                    Component resultMessage = client.grabPanorama(PANO_DIR, 1024, 1024);
                     
                     if (resultMessage != null) {
-                        client.player.sendMessage(resultMessage, false);
+                        client.player.displayClientMessage(resultMessage, false);
                     }
                 }
             }
