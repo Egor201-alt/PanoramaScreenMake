@@ -32,7 +32,7 @@ public abstract class MinecraftPanoramaMixin {
         self.resizeGui();
         for (int i = 0; i < WARMUP_PASSES_AFTER_PANORAMA_RESIZE; i++) {
             self.gameRenderer.update(DeltaTracker.ONE);
-            self.gameRenderer.extract(DeltaTracker.ONE);
+            self.gameRenderer.extract(DeltaTracker.ONE, true);
             self.gameRenderer.renderLevel(DeltaTracker.ONE);
             try {
                 Thread.sleep(10L);
