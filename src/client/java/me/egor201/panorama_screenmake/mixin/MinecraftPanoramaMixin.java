@@ -30,10 +30,11 @@ public abstract class MinecraftPanoramaMixin {
     private void panoramaScreenmake$warmupAfterPanoramaResize(File folder, CallbackInfoReturnable<Component> cir) {
         Minecraft self = (Minecraft) (Object) this;
         self.resizeGui();
+        // renderLevel() cannot be called from within an existing frame submission (Sodium GPU fence conflict).
+        // update() + extract() are sufficient to warm up DH's LOD state after a framebuffer resize.
         for (int i = 0; i < WARMUP_PASSES_AFTER_PANORAMA_RESIZE; i++) {
             self.gameRenderer.update(DeltaTracker.ONE);
             self.gameRenderer.extract(DeltaTracker.ONE, true);
-            self.gameRenderer.renderLevel(DeltaTracker.ONE);
             try {
                 Thread.sleep(10L);
             } catch (InterruptedException e) {
