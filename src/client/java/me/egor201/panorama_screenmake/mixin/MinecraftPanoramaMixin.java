@@ -1,6 +1,6 @@
 package me.egor201.panorama_screenmake.mixin;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import org.lwjgl.opengl.GL11C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ public abstract class MinecraftPanoramaMixin {
         // Sodium's MappableRingBuffer cannot wait on GPU fences while a new command buffer
         // is being built (MC 26.2 restriction). glFinish() resolves all pending GPU submissions
         // upfront so no fence waits are needed during panorama rendering.
-        GlStateManager._finish();
+        GL11C.glFinish();
     }
 
     @Inject(
