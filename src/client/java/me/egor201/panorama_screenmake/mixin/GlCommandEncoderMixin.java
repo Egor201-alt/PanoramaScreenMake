@@ -5,20 +5,21 @@ import org.lwjgl.opengl.GL11C;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// MC 26.2 forbids waiting on a fence while a command encoder submit is active.
-// Sodium's MappableRingBuffer hits this restriction during panorama capture.
-// We intercept the call and use glFinish() instead — only during panorama capture
-// so normal rendering is unaffected.
-@Mixin(targets = "com.mojang.blaze3d.opengl.GlCommandEncoder", remap = false)
+// GlFence.awaitCompletion() calls GlCommandEncoder.awaitSubmit() which throws
+// "Cannot wait on a fence for the current submit" when Sodium renders during panorama.
+// Intercepting awaitCompletion() lets glFinish() do the actual GPU sync while the
+// fence returns normally — MappableRingBuffer sees a clean fence and rotates its ring
+// buffer correctly, leaving no corrupted state for the next normal frame.
+@Mixin(targets = "com.mojang.blaze3d.opengl.GlFence", remap = false)
 public class GlCommandEncoderMixin {
 
-    @Inject(method = "awaitSubmit", at = @At("HEAD"), cancellable = true, remap = false)
-    private void panoramaScreenmake$safeAwaitSubmit(CallbackInfoReturnable<?> cir) {
+    @Inject(method = "awaitCompletion", at = @At("HEAD"), cancellable = true, remap = false)
+    private void panoramaScreenmake$safeAwaitCompletion(CallbackInfo ci) {
         if (PanoramaCraft.panoramaCapturing) {
             GL11C.glFinish();
-            cir.setReturnValue(null);
+            ci.cancel();
         }
     }
 }
