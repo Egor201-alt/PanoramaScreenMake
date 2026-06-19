@@ -1,5 +1,6 @@
 package me.egor201.panorama_screenmake.mixin;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +16,15 @@ import java.io.File;
  */
 @Mixin(Minecraft.class)
 public abstract class MinecraftPanoramaMixin {
+
+    @Inject(method = "grabPanoramixScreenshot", at = @At("HEAD"))
+    private void panoramaScreenmake$flushGPUBeforePanorama(File folder, CallbackInfoReturnable<Component> cir) {
+        // Sodium's MappableRingBuffer cannot wait on GPU fences while a new command buffer
+        // is being built (MC 26.2 restriction). glFinish() resolves all pending GPU submissions
+        // upfront so no fence waits are needed during panorama rendering.
+        GlStateManager._finish();
+    }
+
     @Inject(
         method = "grabPanoramixScreenshot",
         at = @At(
@@ -27,9 +37,6 @@ public abstract class MinecraftPanoramaMixin {
     private void panoramaScreenmake$warmupAfterPanoramaResize(File folder, CallbackInfoReturnable<Component> cir) {
         Minecraft self = (Minecraft) (Object) this;
         self.resizeGui();
-        // In MC 26.2, calling any GameRenderer render methods (update/extract/renderLevel) from within
-        // grabPanoramixScreenshot corrupts PreparedFrame state and causes a crash in the next normal frame.
-        // A plain sleep gives DH time to settle after the framebuffer resize without touching the render pipeline.
         try {
             Thread.sleep(30L);
         } catch (InterruptedException e) {
