@@ -1,8 +1,8 @@
 package me.egor201.panorama_screenmake.mixin;
 
-import org.lwjgl.opengl.GL11C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.opengl.GL11C;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,9 +19,22 @@ public abstract class MinecraftPanoramaMixin {
 
     @Inject(method = "grabPanoramixScreenshot", at = @At("HEAD"))
     private void panoramaScreenmake$flushGPUBeforePanorama(File folder, CallbackInfoReturnable<Component> cir) {
-        // Sodium's MappableRingBuffer cannot wait on GPU fences while a new command buffer
-        // is being built (MC 26.2 restriction). glFinish() resolves all pending GPU submissions
-        // upfront so no fence waits are needed during panorama rendering.
+        // Flush all pending GPU submissions before panorama starts.
+        // Sodium's MappableRingBuffer cannot wait on fences during an active submit (MC 26.2).
+        GL11C.glFinish();
+    }
+
+    @Inject(
+        method = "grabPanoramixScreenshot",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/GameRenderer;renderLevel(Lnet/minecraft/client/DeltaTracker;)V",
+            shift = At.Shift.AFTER
+        )
+    )
+    private void panoramaScreenmake$flushAfterEachFace(File folder, CallbackInfoReturnable<Component> cir) {
+        // Flush GPU after each panorama face so Sodium can safely reuse its ring buffers
+        // for the next face without hitting the "cannot wait on fence during submit" restriction.
         GL11C.glFinish();
     }
 
