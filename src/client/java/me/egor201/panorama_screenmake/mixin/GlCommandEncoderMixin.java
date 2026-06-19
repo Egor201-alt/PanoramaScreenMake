@@ -19,7 +19,7 @@ public class GlCommandEncoderMixin {
     private void panoramaScreenmake$safeAwaitSubmit(long p1, long p2, CallbackInfoReturnable<Long> cir) {
         if (PanoramaCraft.panoramaCapturing) {
             GL11C.glFinish();
-            cir.returnValue(0L);
+            cir.setReturnValue(0L);
         }
     }
 }
