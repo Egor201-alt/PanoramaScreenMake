@@ -3,7 +3,8 @@
   "package": "me.egor201.panorama_screenmake.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "MinecraftPanoramaMixin"
+    "MinecraftPanoramaMixin",
+    "GlCommandEncoderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
