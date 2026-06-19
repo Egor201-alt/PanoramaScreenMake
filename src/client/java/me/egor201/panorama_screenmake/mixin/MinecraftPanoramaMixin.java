@@ -1,6 +1,5 @@
 package me.egor201.panorama_screenmake.mixin;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,8 +15,6 @@ import java.io.File;
  */
 @Mixin(Minecraft.class)
 public abstract class MinecraftPanoramaMixin {
-    private static final int WARMUP_PASSES_AFTER_PANORAMA_RESIZE = 3;
-
     @Inject(
         method = "grabPanoramixScreenshot",
         at = @At(
@@ -30,17 +27,13 @@ public abstract class MinecraftPanoramaMixin {
     private void panoramaScreenmake$warmupAfterPanoramaResize(File folder, CallbackInfoReturnable<Component> cir) {
         Minecraft self = (Minecraft) (Object) this;
         self.resizeGui();
-        // renderLevel() cannot be called from within an existing frame submission (Sodium GPU fence conflict).
-        // update() + extract() are sufficient to warm up DH's LOD state after a framebuffer resize.
-        for (int i = 0; i < WARMUP_PASSES_AFTER_PANORAMA_RESIZE; i++) {
-            self.gameRenderer.update(DeltaTracker.ONE);
-            self.gameRenderer.extract(DeltaTracker.ONE, true);
-            try {
-                Thread.sleep(10L);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
+        // In MC 26.2, calling any GameRenderer render methods (update/extract/renderLevel) from within
+        // grabPanoramixScreenshot corrupts PreparedFrame state and causes a crash in the next normal frame.
+        // A plain sleep gives DH time to settle after the framebuffer resize without touching the render pipeline.
+        try {
+            Thread.sleep(30L);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
