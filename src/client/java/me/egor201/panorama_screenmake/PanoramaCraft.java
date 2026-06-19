@@ -50,7 +50,7 @@ public class PanoramaCraft implements ClientModInitializer {
                         }
                     } catch (Exception e) {
                         LOGGER.error("Panorama capture failed", e);
-                        client.resizeDisplay();
+                        client.resizeGui();
                         client.player.sendSystemMessage(Component.literal(
                             "[PanoramaScreenMake] Capture failed: " + e.getMessage()
                         ));
