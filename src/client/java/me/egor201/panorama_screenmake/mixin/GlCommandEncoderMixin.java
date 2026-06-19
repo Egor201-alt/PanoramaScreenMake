@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class GlCommandEncoderMixin {
 
     @Inject(method = "awaitSubmit", at = @At("HEAD"), cancellable = true, remap = false)
-    private void panoramaScreenmake$safeAwaitSubmit(Object fence, CallbackInfoReturnable<Object> cir) {
+    private void panoramaScreenmake$safeAwaitSubmit(long p1, long p2, CallbackInfoReturnable<Long> cir) {
         if (PanoramaCraft.panoramaCapturing) {
             GL11C.glFinish();
-            cir.setReturnValue(fence);
+            cir.returnValue(0L);
         }
     }
 }
