@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+version = "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
 
 base {
@@ -75,7 +75,7 @@ java {
 }
 
 jar {
-    from("LICENSE") {
+    from("../../LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}"}
     }
 }
@@ -87,3 +87,5 @@ publishing {
         }
     }
 }
+
+sourceSets.main.resources.srcDir(file("../../common/resources"))

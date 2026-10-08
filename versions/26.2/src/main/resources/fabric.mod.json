@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "panorama_screenmake",
+	"version": "${version}",
+	"name": "Panorama ScreenMake",
+	"description": "Use unused code in the vanilla client to make screenshots panorama!",
+	"authors": [
+		"Egor201"
+	],
+	"contact": {
+		"sources": "https://github.com/Egor201-alt/PanoramaScreenMake",
+		"issues": "https://github.com/Egor201-alt/PanoramaScreenMake/issues"
+	},
+	"license": "LGPL-3.0-or-later",
+	"icon": "assets/panorama_screenmake/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"me.egor201.panorama_screenmake.PanoramaCraft"
+		]
+	},
+	"mixins": [
+		"panoramascreenmake.mixins.json"
+	],
+  	"depends": {
+        "fabricloader": ">=0.19.0",
+        "fabric-api": ">=0.152.0",
+        "minecraft": ">=26.2 <27.1",
+        "java": ">=25"
+    },
+	"suggests": {
+  		"modmenu": ">=20.0.0"
+	}
+}
