@@ -68,6 +68,36 @@ public class PanoramaConfigScreen {
                     )
                     .build())
 
+                .option(Option.<Integer>createBuilder()
+                    .name(Text.translatable("config.panoramascreenmake.option.warmup"))
+                    .description(OptionDescription.of(Text.translatable("config.panoramascreenmake.tooltip.warmup")))
+                    .binding(
+                        10,
+                        () -> ModConfig.INSTANCE.warmupTicks,
+                        newVal -> ModConfig.INSTANCE.warmupTicks = newVal
+                    )
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(0, 200)
+                        .step(1)
+                        .formatValue(val -> Text.translatable("config.panoramascreenmake.value.ticks", val, String.format(java.util.Locale.ROOT, "%.2f", val / 20.0)))
+                    )
+                    .build())
+
+                .option(Option.<Integer>createBuilder()
+                    .name(Text.translatable("config.panoramascreenmake.option.face_delay"))
+                    .description(OptionDescription.of(Text.translatable("config.panoramascreenmake.tooltip.face_delay")))
+                    .binding(
+                        5,
+                        () -> ModConfig.INSTANCE.faceDelayTicks,
+                        newVal -> ModConfig.INSTANCE.faceDelayTicks = newVal
+                    )
+                    .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(1, 200)
+                        .step(1)
+                        .formatValue(val -> Text.translatable("config.panoramascreenmake.value.ticks", val, String.format(java.util.Locale.ROOT, "%.2f", val / 20.0)))
+                    )
+                    .build())
+
                 .option(Option.<String>createBuilder()
                     .name(Text.translatable("config.panoramascreenmake.option.path"))
                     .description(OptionDescription.of(Text.translatable("config.panoramascreenmake.tooltip.path")))

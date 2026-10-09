@@ -17,6 +17,12 @@
   "config.panoramascreenmake.value.instant": "Моментально",
   "config.panoramascreenmake.value.seconds": "%s сек.",
   "config.panoramascreenmake.tooltip.delay": "Время чтобы спрятать интерфейс или руки перед снимком.",
+
+  "config.panoramascreenmake.option.warmup": "Прогрев перед первой гранью",
+  "config.panoramascreenmake.tooltip.warmup": "Сколько тиков ждать после смены разрешения, перед первой гранью.\nУвеличьте, если шейдерам, Voxy или Distant Horizons нужно время на загрузку.\n20 тиков = 1 секунда.",
+  "config.panoramascreenmake.option.face_delay": "Задержка на каждую грань",
+  "config.panoramascreenmake.tooltip.face_delay": "Сколько тиков ждать после поворота камеры, перед снимком каждой грани.\nУвеличьте, чтобы убрать размытие движения, пропавшие чанки и LOD низкого качества.\n20 тиков = 1 секунда.",
+  "config.panoramascreenmake.value.ticks": "%s тиков (%s с)",
   
   "config.panoramascreenmake.option.path": "Путь сохранения",
   "config.panoramascreenmake.tooltip.path": "Папка внутри директории игры.\nНачинайте с '/' (например /panoramas).",

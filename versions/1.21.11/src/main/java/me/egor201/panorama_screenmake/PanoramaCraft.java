@@ -127,7 +127,7 @@ public class PanoramaCraft implements ClientModInitializer {
         int targetRes = ModConfig.INSTANCE.resolution;
         if (targetRes <= 0) targetRes = 1024;
 
-        captureTask = new PanoramaCaptureTask(finalSessionDir, targetRes);
+        captureTask = new PanoramaCaptureTask(finalSessionDir, targetRes, ModConfig.INSTANCE.warmupTicks, ModConfig.INSTANCE.faceDelayTicks);
     }
 
     private File getNextFreeDirectory(File baseDir) {

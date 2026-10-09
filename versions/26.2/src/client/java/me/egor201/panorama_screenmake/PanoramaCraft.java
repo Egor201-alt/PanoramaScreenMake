@@ -28,6 +28,7 @@ public class PanoramaCraft implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         PANO_DIR = new File(Minecraft.getInstance().gameDirectory, "panoramas");
+        ModConfig.load();
 
         KeyMapping panoramaKeyBinding = KeyMappingHelper.registerKeyMapping(
             new KeyMapping(

@@ -1,18 +1,16 @@
 package me.egor201.panorama_screenmake.mixin;
 
+import me.egor201.panorama_screenmake.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 
-/**
- * Distant Horizons (and similar mods) need a few full render passes after the panorama
- * framebuffer resize before the first face is captured; vanilla only sleeps 10ms per face.
- */
 @Mixin(Minecraft.class)
 public abstract class MinecraftPanoramaMixin {
 
@@ -29,10 +27,20 @@ public abstract class MinecraftPanoramaMixin {
         Minecraft self = (Minecraft) (Object) this;
         self.resizeGui();
         try {
-            Thread.sleep(30L);
+            Thread.sleep(Math.max(30L, ModConfig.INSTANCE.warmupTicks * 50L));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    @ModifyArg(
+        method = "grabPanoramixScreenshot",
+        at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V"),
+        index = 0,
+        require = 0
+    )
+    private long panoramaScreenmake$faceDelay(long original) {
+        return Math.max(original, ModConfig.INSTANCE.faceDelayTicks * 50L);
     }
 
     @Inject(

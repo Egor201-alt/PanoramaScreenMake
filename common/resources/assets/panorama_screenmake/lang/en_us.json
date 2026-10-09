@@ -17,6 +17,12 @@
   "config.panoramascreenmake.value.instant": "Instant",
   "config.panoramascreenmake.value.seconds": "%s sec.",
   "config.panoramascreenmake.tooltip.delay": "Time to hide UI or hands before shooting.",
+
+  "config.panoramascreenmake.option.warmup": "Warm-up Before First Face",
+  "config.panoramascreenmake.tooltip.warmup": "Ticks to wait after switching to the capture resolution, before the first face.\nRaise it if shaders, Voxy or Distant Horizons need time to load.\n20 ticks = 1 second.",
+  "config.panoramascreenmake.option.face_delay": "Delay Per Face",
+  "config.panoramascreenmake.tooltip.face_delay": "Ticks to wait after turning the camera, before each face is captured.\nRaise it to fix motion blur, missing chunks and low quality LODs.\n20 ticks = 1 second.",
+  "config.panoramascreenmake.value.ticks": "%s ticks (%s s)",
   
   "config.panoramascreenmake.option.path": "Save Path",
   "config.panoramascreenmake.tooltip.path": "Folder inside game directory.\nStart with '/' (e.g. /panoramas).",

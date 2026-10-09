@@ -63,6 +63,20 @@ Jars for every version are on the [Releases](https://github.com/Egor201-alt/Pano
 | 26.2 | 25 | No |
 | 26.3 | 25 | No |
 
+## Configuration
+
+Settings live in `config/panoramascreenmake.json`. On 1.21.11 they are also available in the Mod Menu config screen.
+
+| Option | Default | What it does |
+| --- | :---: | --- |
+| `warmupTicks` | 10 | Ticks to wait after switching to the capture resolution, before the first face |
+| `faceDelayTicks` | 5 | Ticks to wait after turning the camera, before each face is captured |
+
+20 ticks equal one second. If you use shaders, Voxy or Distant Horizons and see motion blur, missing chunks or blocky LODs in the result, raise both values.
+
+> [!NOTE]
+> Auto exposure is a shader feature and adapts to what the camera sees, so each face can still end up slightly different. Turning it off in your shader settings is the only way to get identical exposure on all six faces.
+
 ## Compatibility
 
 - **Distant Horizons**: the capture waits a few extra render passes after resizing the framebuffer so distant terrain is loaded before each face is taken.
