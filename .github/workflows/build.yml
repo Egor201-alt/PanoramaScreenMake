@@ -21,6 +21,8 @@ jobs:
             java: 25
           - mc: "26.2"
             java: 25
+          - mc: "26.3"
+            java: 25
     defaults:
       run:
         working-directory: versions/${{ matrix.mc }}

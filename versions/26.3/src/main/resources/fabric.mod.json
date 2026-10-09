@@ -22,13 +22,13 @@
 	"mixins": [
 		"panoramascreenmake.mixins.json"
 	],
-  	"depends": {
-        "fabricloader": ">=0.18.0",
-        "fabric-api": ">=0.140.0", 
-        "minecraft": ">=26.1 <26.2",
-        "java": ">=25"
-    },
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"fabric-api": ">=0.160.0",
+		"minecraft": ">=26.3 <26.4",
+		"java": ">=25"
+	},
 	"suggests": {
-  		"modmenu": ">=18.0.0"
+		"modmenu": ">=21.0.0"
 	}
 }
